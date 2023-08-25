@@ -14,7 +14,7 @@ function ValueView({ value }: ValueViewProps) {
           <div className="text-red-500">{value}</div>
         ))
         .with({ type: "text" }, ({ value }) => (
-          <div className="text-blue-500">"{value}"</div>
+          <div className="text-blue-500">&quot;{value}&quot;</div>
         ))
         .with({ type: "func" }, ({ value }) => (
           <div className="text-green-500 flex gap-1">
