@@ -2,11 +2,28 @@ import * as S from "../../screept-lang";
 import { match } from "ts-pattern";
 import IdentifierView from "./identifier";
 import ValueView from "./value";
+import { cn } from "@/lib/utils";
 
-type ExpressionViewProps = { expresssion: S.Expression };
-function ExpressionView({ expresssion }: ExpressionViewProps) {
+type ExpressionViewProps = {
+  expresssion: S.Expression;
+  environment?: S.Environment;
+};
+function ExpressionView({ expresssion, environment }: ExpressionViewProps) {
+  const evaluated = environment
+    ? S.getStringValue(S.evaluateExpression(environment, expresssion, true))
+    : undefined;
+  let failed = false;
+  try {
+    environment
+      ? S.getStringValue(S.evaluateExpression(environment, expresssion, false))
+      : undefined;
+  } catch (e) {
+    console.log("EXP", { e });
+    failed = true;
+  }
+
   return (
-    <div className="flex">
+    <div className={cn("flex", { ["bg-red-200 "]: failed })} title={evaluated}>
       {match(expresssion)
         .with({ type: "literal" }, ({ value }) => <ValueView value={value} />)
         .with({ type: "binary_op" }, ({ op, x, y }) => (
@@ -17,15 +34,24 @@ function ExpressionView({ expresssion }: ExpressionViewProps) {
           </div>
         ))
         .with({ type: "var" }, ({ identifier }) => (
-          <IdentifierView identifier={identifier} />
+          <div>
+            <IdentifierView identifier={identifier} />
+          </div>
         ))
         .with({ type: "fun_call" }, ({ identifier, args }) => (
           <div className="flex gap-1">
             <IdentifierView identifier={identifier} />
             <span>(</span>
-            {args.map((a) => (
-              <ExpressionView expresssion={a} />
-            ))}
+            <span className="flex gap-1">
+              {args.map((a, i) => (
+                <span
+                  className="after:content-[','] last:after:content-none flex"
+                  key={i}
+                >
+                  <ExpressionView expresssion={a} />
+                </span>
+              ))}
+            </span>
             <span>)</span>
           </div>
         ))
@@ -38,9 +64,23 @@ function ExpressionView({ expresssion }: ExpressionViewProps) {
             <span>)</span>
           </div>
         ))
-        .otherwise(() => (
-          <div>EXPRESSION BODY</div>
-        ))}
+        .with({ type: "unary_op" }, ({ op, x }) => {
+          return (
+            <div className="flex">
+              {op} <ExpressionView expresssion={x} />
+            </div>
+          );
+        })
+        .with({ type: "conditon" }, ({ condition, onFalse, onTrue }) => (
+          <div className="flex gap-1">
+            <ExpressionView expresssion={condition} />
+            <span>?</span>
+            <ExpressionView expresssion={onTrue} />
+            <span>:</span>
+            <ExpressionView expresssion={onFalse} />
+          </div>
+        ))
+        .exhaustive()}
     </div>
   );
 }

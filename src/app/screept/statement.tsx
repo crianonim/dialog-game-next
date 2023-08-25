@@ -26,8 +26,11 @@ function StatementView({ statement }: StatementViewProps) {
           <div>
             {"{"}
             <ul className="pl-1">
-              {statements.map((s) => (
-                <li className="flex after:content-[';'] last:after:content-none">
+              {statements.map((s, i) => (
+                <li
+                  key={s.type + i}
+                  className="flex after:content-[';'] last:after:content-none"
+                >
                   <StatementView statement={s} />
                 </li>
               ))}
@@ -47,8 +50,8 @@ function StatementView({ statement }: StatementViewProps) {
           <div className="flex gap-1">
             <IdentifierView identifier={identifier} />
             <span>(</span>
-            {args.map((a) => (
-              <ExpressionView expresssion={a} />
+            {args.map((a, i) => (
+              <ExpressionView key={i} expresssion={a} />
             ))}
             <span>)</span>
           </div>

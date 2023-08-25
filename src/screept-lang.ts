@@ -41,9 +41,9 @@ export type Identifier =
 export type Environment = {
   vars: Record<string, Value>;
   procedures: Record<string, Statement>;
-  output: string[];
+  output: OutputLine[];
 };
-
+export type OutputLine = { ts: number; value: string };
 export type Statement =
   | { type: "bind"; identifier: Identifier; value: Expression }
   | { type: "block"; statements: Statement[] }
@@ -97,6 +97,7 @@ enum TokenKind {
 }
 
 const lexer = buildLexer([
+  [true, /^".*?"/g, TokenKind.String],
   [true, /^PRINT/g, TokenKind.Print],
   [true, /^FUNC/g, TokenKind.Func],
   [true, /^IF/g, TokenKind.If],
@@ -105,7 +106,6 @@ const lexer = buildLexer([
   [true, /^PROC/g, TokenKind.ProcDef],
   [true, /^RUN/g, TokenKind.ProcRun],
   [true, /^RND/g, TokenKind.Rnd],
-  [true, /^".*?"/g, TokenKind.String],
   [true, /^[a-z_][a-z_0-9]*/g, TokenKind.Identifier],
   [true, /^\$\[/g, TokenKind.ComputedIdentifierStart],
   [true, /^\]/g, TokenKind.ComputedIdentifierEnd],
@@ -427,77 +427,89 @@ export function parseStatement(expr: string): Statement {
 export function evaluateIdentifier(environment: Environment, id: Identifier) {
   if (id.type == "literal") return id.value;
   else {
-    return getStringValue(evaluateExpression(environment, id.value));
+    return getStringValue(evaluateExpression(environment, id.value, true));
   }
 }
 export function evaluateExpression(
   environment: Environment,
-  expression: Expression
+  expression: Expression,
+  safe?: boolean
 ): Value {
-  return match(expression)
-    .returnType<Value>()
-    .with({ type: "literal" }, ({ value }) => value)
-    .with({ type: "binary_op" }, ({ x, y, op }) => {
-      const evX = evaluateExpression(environment, x);
-      const evY = evaluateExpression(environment, y);
-      return evaluateBinaryExpression(evX, op, evY);
-    })
-    .with({ type: "var" }, ({ identifier }) => {
-      const lookup =
-        environment.vars[evaluateIdentifier(environment, identifier)];
-      if (lookup) return lookup;
-      else throw new Error(`Undefined {${identifier.value}}`);
-    })
-    .with({ type: "unary_op" }, ({ op, x }) =>
-      match(op)
-        .with("-", () => {
-          const value = evaluateExpression(environment, x);
-          return match(value)
-            .with({ type: "number" }, ({ value }) => n(-value))
-            .otherwise(() => {
-              throw new Error("Unary only with numbers");
-            });
-        })
-        .with("+", () => {
-          const value = evaluateExpression(environment, x);
-          return match(value)
-            .with({ type: "number" }, ({ value }) => n(+value))
-            .otherwise(() => {
-              throw new Error("Unary only with numbers");
-            });
-        })
-        .with("!", () =>
-          isTruthy(evaluateExpression(environment, x)) ? n(0) : n(1)
-        )
-        .exhaustive()
-    )
+  try {
+    return match(expression)
+      .returnType<Value>()
+      .with({ type: "literal" }, ({ value }) => value)
+      .with({ type: "binary_op" }, ({ x, y, op }) => {
+        const evX = evaluateExpression(environment, x);
+        const evY = evaluateExpression(environment, y);
+        return evaluateBinaryExpression(evX, op, evY);
+      })
+      .with({ type: "var" }, ({ identifier }) => {
+        const lookup =
+          environment.vars[evaluateIdentifier(environment, identifier)];
+        if (lookup) return lookup;
+        else {
+          if (safe) return n(0);
+          else throw new Error(`Undefined identifier: {${identifier.value}}`);
+        }
+      })
+      .with({ type: "unary_op" }, ({ op, x }) =>
+        match(op)
+          .with("-", () => {
+            const value = evaluateExpression(environment, x);
+            return match(value)
+              .with({ type: "number" }, ({ value }) => n(-value))
+              .otherwise(() => {
+                throw new Error("Unary only with numbers");
+              });
+          })
+          .with("+", () => {
+            const value = evaluateExpression(environment, x);
+            return match(value)
+              .with({ type: "number" }, ({ value }) => n(+value))
+              .otherwise(() => {
+                throw new Error("Unary only with numbers");
+              });
+          })
+          .with("!", () =>
+            isTruthy(evaluateExpression(environment, x)) ? n(0) : n(1)
+          )
+          .exhaustive()
+      )
 
-    .with({ type: "conditon" }, ({ condition, onTrue, onFalse }) => {
-      const evCondition = evaluateExpression(environment, condition);
-      return isTruthy(evCondition)
-        ? evaluateExpression(environment, onTrue)
-        : evaluateExpression(environment, onFalse);
-    })
+      .with({ type: "conditon" }, ({ condition, onTrue, onFalse }) => {
+        const evCondition = evaluateExpression(environment, condition);
+        return isTruthy(evCondition)
+          ? evaluateExpression(environment, onTrue)
+          : evaluateExpression(environment, onFalse);
+      })
 
-    .with({ type: "fun_call" }, ({ args, identifier }) => {
-      const fnContent =
-        environment.vars[evaluateIdentifier(environment, identifier)];
-      if (!fnContent || fnContent.type !== "func") {
-        throw new Error(
-          `Undefined ${evaluateIdentifier(environment, identifier)}`
+      .with({ type: "fun_call" }, ({ args, identifier }) => {
+        const fnContent =
+          environment.vars[evaluateIdentifier(environment, identifier)];
+        if (!fnContent || fnContent.type !== "func") {
+          throw new Error(
+            `Undefined function: ${evaluateIdentifier(environment, identifier)}`
+          );
+        }
+        const newEnv = newEnvironment(environment);
+        const argsEvaluated = args.map((a) =>
+          evaluateExpression(environment, a)
         );
-      }
-      const newEnv = newEnvironment(environment);
-      const argsEvaluated = args.map((a) => evaluateExpression(environment, a));
-      argsEvaluated.forEach((el, i) => {
-        newEnv.vars[`_${i}`] = el;
-      });
-      return evaluateExpression(newEnv, fnContent.value);
-    })
-    .with({ type: "parens" }, ({ expression }) =>
-      evaluateExpression(environment, expression)
-    )
-    .exhaustive();
+        argsEvaluated.forEach((el, i) => {
+          newEnv.vars[`_${i}`] = el;
+        });
+        return evaluateExpression(newEnv, fnContent.value);
+      })
+      .with({ type: "parens" }, ({ expression }) =>
+        evaluateExpression(environment, expression)
+      )
+      .exhaustive();
+  } catch (e) {
+    console.log({ e }, "evaluating", expression);
+    if (safe) return t("");
+    else throw e;
+  }
 }
 
 function evaluateBinaryExpression(x: Value, op: BinaryOp, y: Value): Value {
@@ -581,75 +593,82 @@ export function getStringValue(v: Value): string {
 export function runStatement(
   environment: Environment,
   statement: Statement
+  // safe?: boolean
 ): Environment {
-  return match(statement)
-    .with({ type: "print" }, ({ value }) => {
-      const evEx = evaluateExpression(environment, value);
-      console.log("PRINT", getStringValue(evEx));
-      const nEnvironment = newEnvironment(environment);
-      nEnvironment.output.push(getStringValue(evEx));
-      return nEnvironment;
-    })
-    .with({ type: "bind" }, ({ value, identifier }) => {
-      const evEx = evaluateExpression(environment, value);
-      const id = evaluateIdentifier(environment, identifier);
-      const nEnvironment = newEnvironment(environment);
-      nEnvironment.vars[id] = evEx;
-      return nEnvironment;
-    })
-    .with({ type: "block" }, ({ statements }) => {
-      return statements.reduce<Environment>((prev, current) => {
-        return runStatement(prev, current);
-      }, environment);
-    })
-    .with(
-      { type: "if" },
-      ({ condition, thenStatement: then, elseStatement }) => {
-        if (isTruthy(evaluateExpression(environment, condition)))
-          return runStatement(environment, then);
-        else return runStatement(environment, elseStatement);
-      }
-    )
-    .with({ type: "proc_def" }, ({ statement, identifier }) => {
-      const nEnvironment = newEnvironment(environment);
-      nEnvironment.procedures[evaluateIdentifier(environment, identifier)] =
-        statement;
-      return nEnvironment;
-    })
-    .with({ type: "pass" }, () => {
-      return environment;
-    })
-    .with({ type: "proc_run" }, ({ identifier, args }) => {
-      const procContent =
-        environment.procedures[evaluateIdentifier(environment, identifier)];
-      if (!procContent) {
-        throw new Error(
-          `Undefined ${evaluateIdentifier(environment, identifier)}`
+  try {
+    return match(statement)
+      .with({ type: "print" }, ({ value }) => {
+        const evEx = evaluateExpression(environment, value);
+        console.log("PRINT", getStringValue(evEx));
+        return addOutputToEnvironment(environment, getStringValue(evEx));
+      })
+      .with({ type: "bind" }, ({ value, identifier }) => {
+        const evEx = evaluateExpression(environment, value);
+        const id = evaluateIdentifier(environment, identifier);
+        const nEnvironment = newEnvironment(environment);
+        nEnvironment.vars[id] = evEx;
+        return nEnvironment;
+      })
+      .with({ type: "block" }, ({ statements }) => {
+        return statements.reduce<Environment>((prev, current) => {
+          return runStatement(prev, current);
+        }, environment);
+      })
+      .with(
+        { type: "if" },
+        ({ condition, thenStatement: then, elseStatement }) => {
+          if (isTruthy(evaluateExpression(environment, condition)))
+            return runStatement(environment, then);
+          else return runStatement(environment, elseStatement);
+        }
+      )
+      .with({ type: "proc_def" }, ({ statement, identifier }) => {
+        const nEnvironment = newEnvironment(environment);
+        nEnvironment.procedures[evaluateIdentifier(environment, identifier)] =
+          statement;
+        return nEnvironment;
+      })
+      .with({ type: "pass" }, () => {
+        return environment;
+      })
+      .with({ type: "proc_run" }, ({ identifier, args }) => {
+        const procContent =
+          environment.procedures[evaluateIdentifier(environment, identifier)];
+        if (!procContent) {
+          throw new Error(
+            `Undefined procedure ${evaluateIdentifier(environment, identifier)}`
+          );
+        }
+        const newEnv = newEnvironment(environment);
+        const argsEvaluated = args.map((a) =>
+          evaluateExpression(environment, a)
         );
-      }
-      const newEnv = newEnvironment(environment);
-      const argsEvaluated = args.map((a) => evaluateExpression(environment, a));
-      argsEvaluated.forEach((el, i) => {
-        newEnv.vars[`_${i}`] = el;
-      });
-      return runStatement(newEnv, procContent);
-    })
-    .with({ type: "random" }, ({ identifier, from, to }) => {
-      const fromEv = evaluateExpression(environment, from);
-      const toEv = evaluateExpression(environment, to);
-      if (fromEv.type !== "number" || toEv.type !== "number") {
-        throw new Error("Random only accepts number ranges.");
-      }
-      const f = fromEv.value;
-      const t = toEv.value;
-      const generated = Math.round(Math.random() * (t - f) + f);
-      const id = evaluateIdentifier(environment, identifier);
-      const nEnvironment = newEnvironment(environment);
-      nEnvironment.vars[id] = n(generated);
-      return nEnvironment;
-    })
+        argsEvaluated.forEach((el, i) => {
+          newEnv.vars[`_${i}`] = el;
+        });
+        return runStatement(newEnv, procContent);
+      })
+      .with({ type: "random" }, ({ identifier, from, to }) => {
+        const fromEv = evaluateExpression(environment, from);
+        const toEv = evaluateExpression(environment, to);
+        if (fromEv.type !== "number" || toEv.type !== "number") {
+          throw new Error("Random only accepts number ranges.");
+        }
+        const f = fromEv.value;
+        const t = toEv.value;
+        const generated = Math.round(Math.random() * (t - f) + f);
+        const id = evaluateIdentifier(environment, identifier);
+        const nEnvironment = newEnvironment(environment);
+        nEnvironment.vars[id] = n(generated);
+        return nEnvironment;
+      })
 
-    .exhaustive();
+      .exhaustive();
+  } catch (e) {
+    console.log({ e }, "running", statement);
+    if (false) return environment;
+    else throw e;
+  }
 }
 
 function newEnvironment(e: Environment): Environment {
@@ -659,6 +678,7 @@ function newEnvironment(e: Environment): Environment {
 export function isTruthy(value: Value): Boolean {
   return match(value)
     .with({ type: "number" }, ({ value }) => value !== 0)
+    .with({ type: "text" }, ({ value }) => value !== "")
     .otherwise(() => true);
 }
 
@@ -694,4 +714,67 @@ export function div(x: Expression, y: Expression): Expression {
 // Expressions
 export function l(n: Value): Expression {
   return { type: "literal", value: n };
+}
+
+export function createOutput(value: string): OutputLine {
+  return { ts: new Date().valueOf(), value };
+}
+
+export function addOutputToEnvironment(
+  environment: Environment,
+  value: string
+): Environment {
+  return {
+    ...environment,
+    output: [...environment.output, createOutput(value)],
+  };
+}
+
+export function stringifyValue(v: Value): string {
+  return match(v)
+    .with({ type: "number" }, ({ value }) => value + "")
+    .with({ type: "text" }, ({ value }) => `"${value}"`)
+    .with({ type: "func" }, ({ value }) => `FUNC ${stringifyExpression(value)}`)
+    .exhaustive();
+}
+
+export function stringifyIdentifier(i: Identifier): string {
+  return match(i)
+    .with({ type: "literal" }, ({ value }) => value)
+    .with(
+      { type: "computed" },
+      ({ value }) => `$[${stringifyExpression(value)}]`
+    )
+    .exhaustive();
+}
+
+export function stringifyExpression(e: Expression): string {
+  return match(e)
+    .with({ type: "literal" }, ({ value }) => stringifyValue(value))
+    .with(
+      { type: "binary_op" },
+      ({ op, x, y }) =>
+        `${stringifyExpression(x)} ${op}  ${stringifyExpression(y)}`
+    )
+    .with({ type: "var" }, ({ identifier }) => stringifyIdentifier(identifier))
+    .with(
+      { type: "fun_call" },
+      ({ identifier, args }) =>
+        `${stringifyIdentifier(identifier)}(${args.map((a) =>
+          stringifyExpression(a)
+        )})`
+    )
+    .with({ type: "parens" }, ({ expression }) => `(${stringifyExpression})`)
+
+    .with({ type: "unary_op" }, ({ op, x }) => `${op}${stringifyExpression(x)}`)
+
+    .with(
+      { type: "conditon" },
+      ({ condition, onFalse, onTrue }) =>
+        `${stringifyExpression(condition)} ? ${stringifyExpression(
+          onTrue
+        )} : ${stringifyExpression(onFalse)}`
+    )
+
+    .exhaustive();
 }

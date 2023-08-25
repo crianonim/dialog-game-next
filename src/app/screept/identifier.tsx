@@ -8,7 +8,7 @@ type IdentifierViewProps = {
 
 function IdentifierView({ identifier }: IdentifierViewProps) {
   return (
-    <div className="font-extrabold flex gap-0">
+    <div className="font-mono flex gap-0">
       {match(identifier)
         .with({ type: "literal" }, ({ value }) => <div>{value}</div>)
         .with({ type: "computed" }, ({ value }) => (

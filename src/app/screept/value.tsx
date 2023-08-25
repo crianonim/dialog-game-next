@@ -8,7 +8,7 @@ type ValueViewProps = {
 
 function ValueView({ value }: ValueViewProps) {
   return (
-    <div>
+    <div className="whitespace-pre-wrap">
       {match(value)
         .with({ type: "number" }, ({ value }) => (
           <div className="text-red-500">{value}</div>

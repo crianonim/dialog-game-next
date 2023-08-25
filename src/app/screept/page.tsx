@@ -3,10 +3,27 @@ import { useState } from "react";
 import * as S from "../../screept-lang";
 import { exampleScreept, exampleEnv } from "../../example-screept";
 import EnvironmentView from "./environment";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import * as D from "../../dialog";
+import fabledDefinition from "../../games/fabled2.json";
+const gameDefinition: D.GameDefinition = fabledDefinition as D.GameDefinition;
+const dialogs: Record<string, D.Dialog> = gameDefinition.dialogs;
 
 function Screept() {
   const [screept, setScreept] = useState(exampleScreept);
-  const [environment, setEnvironment] = useState(exampleEnv);
+  const [environment, setEnvironment] = useState(
+    gameDefinition.gameState.screeptEnv
+  );
   const [status, setStatus] = useState("");
   const [command, setCommand] = useState("PRINT status()");
   function attemptParse() {
@@ -30,25 +47,45 @@ function Screept() {
     <div>
       <h2>Sceept</h2>
       <div>Status: {status}</div>
-      <div className="flex  justify-between">
-        <div className="w-[800px]">
-          <textarea
-            className="font-mono w-[800px] h-[600px] text-xs"
+      <div className="flex  gap-4 ">
+        <div className="w-[600px]">
+          <Textarea
+            className="font-mono w-[600px] h-[600px] text-xs"
             value={screept}
             onChange={(e) => setScreept(e.target.value)}
-          ></textarea>
+          ></Textarea>
           <button onClick={attemptParse}>Parse</button>
           <button onClick={() => run(screept)}>RUN</button>
         </div>
         <div>
-          <div className="flex">
-            <input
-              value={command}
-              onChange={(e) => setCommand(e.target.value)}
-            ></input>
-            <button onClick={() => run(command)}>RUN</button>
-          </div>
-          <EnvironmentView environment={environment} />
+          <Card>
+            <Card className="h-[200px] overflow-auto">
+              <div>
+                {environment.output
+                  .slice()
+                  .reverse()
+                  .map((o) => (
+                    <div key={o.ts}>{o.value}</div>
+                  ))}
+              </div>
+            </Card>
+            <div>
+              <form
+                className="flex gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  run(command);
+                }}
+              >
+                <Input
+                  value={command}
+                  onChange={(e) => setCommand(e.target.value)}
+                ></Input>
+                <Button>RUN</Button>
+              </form>
+            </div>
+            {/* <EnvironmentView environment={environment} /> */}
+          </Card>
         </div>
       </div>
     </div>
