@@ -509,28 +509,41 @@ function OptionDebugView({
         ))}
       </div>
       {editState.isEdited && (
-        <Button
-          onClick={() => {
-            const newAction: D.DialogAction = {
-              type: "screept",
-              value: S.parseStatement(`PRINT "Hello!"`),
-              id: crypto.randomUUID(),
-            };
-            const newDialogs = D.updateDialogOption(
-              dialogs,
-              dialogId,
-              option.id,
-              (o) => ({
-                ...o,
-                actions: [...o.actions, newAction],
-              })
-            );
-            dispatch({ type: "update dialogs", dialogs: newDialogs });
-          }}
-          variant="secondary"
-        >
-          Add Action
-        </Button>
+        <div className="flex justify-between">
+          <Button
+            onClick={() => {
+              const newAction: D.DialogAction = {
+                type: "screept",
+                value: S.parseStatement(`PRINT "Hello!"`),
+                id: crypto.randomUUID(),
+              };
+              const newDialogs = D.updateDialogOption(
+                dialogs,
+                dialogId,
+                option.id,
+                (o) => ({
+                  ...o,
+                  actions: [...o.actions, newAction],
+                })
+              );
+              dispatch({ type: "update dialogs", dialogs: newDialogs });
+            }}
+            variant="secondary"
+          >
+            Add Action
+          </Button>
+          <Button
+            onClick={() => {
+              const newDialogs = D.updateDialog(dialogs, dialogId, (d) => ({
+                ...d,
+                options: d.options.filter((o) => o.id !== option.id),
+              }));
+              dispatch({ type: "update dialogs", dialogs: newDialogs });
+            }}
+          >
+            Remove Option
+          </Button>
+        </div>
       )}
     </Card>
   );
