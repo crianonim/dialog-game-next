@@ -778,3 +778,40 @@ export function stringifyExpression(e: Expression): string {
 
     .exhaustive();
 }
+
+export function stringifyStatement(e: Statement): string {
+  return (
+    match(e)
+      .with(
+        { type: "print" },
+        ({ value }) => `PRINT ${stringifyExpression(value)}`
+      )
+      // .with(
+      //   { type: "binary_op" },
+      //   ({ op, x, y }) =>
+      //     `${stringifyExpression(x)} ${op}  ${stringifyExpression(y)}`
+      // )
+      // .with({ type: "var" }, ({ identifier }) => stringifyIdentifier(identifier))
+      // .with(
+      //   { type: "fun_call" },
+      //   ({ identifier, args }) =>
+      //     `${stringifyIdentifier(identifier)}(${args.map((a) =>
+      //       stringifyExpression(a)
+      //     )})`
+      // )
+      // .with({ type: "parens" }, ({ expression }) => `(${stringifyExpression})`)
+
+      // .with({ type: "unary_op" }, ({ op, x }) => `${op}${stringifyExpression(x)}`)
+
+      // .with(
+      //   { type: "conditon" },
+      //   ({ condition, onFalse, onTrue }) =>
+      //     `${stringifyExpression(condition)} ? ${stringifyExpression(
+      //       onTrue
+      //     )} : ${stringifyExpression(onFalse)}`
+      // )
+
+      // .exhaustive();
+      .otherwise(() => "")
+  );
+}

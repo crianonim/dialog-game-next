@@ -11,7 +11,7 @@ function StatementView({ statement }: StatementViewProps) {
     <div>
       {match(statement)
         .with({ type: "print" }, ({ value }) => (
-          <div>
+          <div className="flex gap-1">
             PRINT <ExpressionView expresssion={value} />
           </div>
         ))

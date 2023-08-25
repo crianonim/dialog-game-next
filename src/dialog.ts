@@ -210,7 +210,32 @@ export function updateDialogOption(
     options: d.options.map((o) => (o.id === optionId ? fn(o) : o)),
   }));
 }
+export function updateDialogAction(
+  dialogs: Dialogs,
+  dialogId: string,
+  optionId: string,
+  actionId: string,
+  fn: (x: DialogAction) => DialogAction
+): Dialogs {
+  function updateActionInTree(a: DialogAction): DialogAction {
+    return a.type === "conditional" && a.id !== actionId
+      ? {
+          ...a,
+          then: updateActionInTree(a.then),
+          else: updateActionInTree(a.else),
+        }
+      : a.id === actionId
+      ? fn(a)
+      : a;
+  }
 
+  return updateDialogOption(dialogs, dialogId, optionId, (d) => ({
+    ...d,
+    actions: d.actions.map(updateActionInTree),
+  }));
+}
+
+// todo remove and use inline
 export function updateDialogText(
   dialogs: Dialogs,
   text: S.Expression,
