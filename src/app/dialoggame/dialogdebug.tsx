@@ -545,6 +545,7 @@ function OptionDebugView({
           </Button>
         </div>
       )}
+      <span>Option ID({option.id})</span>
     </Card>
   );
 }
@@ -594,6 +595,7 @@ function DialogActionDebugView({
                 ({
                   type: "go_dialog",
                   destination: "start",
+                  id: action.id,
                 } as D.DialogAction)
             )
             .with("msg", () => {
@@ -661,6 +663,21 @@ function DialogActionDebugView({
                   dispatch
                 )}
               </TypeBadge>
+              {!(destination in dialogs) && (
+                <Button
+                  onClick={() => {
+                    dispatch({
+                      type: "update dialogs",
+                      dialogs: {
+                        ...dialogs,
+                        [destination]: D.generateNewDialog(destination),
+                      },
+                    });
+                  }}
+                >
+                  Add Dialog
+                </Button>
+              )}
             </div>
           </div>
         ))
@@ -739,9 +756,9 @@ function DialogActionDebugView({
         ))
         .with({ type: "block" }, ({ actions }) => (
           <div>
-            {actions.map((el, i) => (
+            {actions.map((el) => (
               <DialogActionDebugView
-                key={i}
+                key={el.id}
                 action={el}
                 dialogId={dialogId}
                 dispatchEdit={dispatchEdit}
@@ -758,6 +775,7 @@ function DialogActionDebugView({
           </div>
         ))
         .exhaustive()}
+      <span>ActionID ({action.id})</span>
     </div>
   );
 }

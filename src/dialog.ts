@@ -243,3 +243,11 @@ export function updateDialogText(
 ): Dialogs {
   return updateDialog(dialogs, dialogId, (d) => ({ ...d, text }));
 }
+
+export function generateNewDialog(id: string): Dialog {
+  return {
+    id,
+    text: S.l(S.t("New dialog" + id)),
+    options: [],
+  };
+}
