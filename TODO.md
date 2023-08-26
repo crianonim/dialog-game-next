@@ -21,10 +21,16 @@
 
 ## Variables
 
-- add
-- remove
-- sort alphabetically
-
 # Screept
 
 - complete stringify
+
+---
+
+Done
+
+vars:
+
+- sort alphabetically
+- add var
+- remove var

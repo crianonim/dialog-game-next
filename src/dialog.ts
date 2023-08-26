@@ -128,6 +128,7 @@ export type GameDefinitionAction =
     }
   | { type: "update dialogs"; dialogs: Dialogs }
   | { type: "replace game definition"; newGameDefinition: GameDefinition }
+  | { type: "update gamestate"; fn: (g: GameState) => GameState }
   | { type: "replace"; newState: GameState };
 
 export function gameDefinitionReducer(
@@ -165,6 +166,10 @@ export function gameDefinitionReducer(
     }))
     .with({ type: "replace game definition" }, ({ newGameDefinition }) => ({
       ...newGameDefinition,
+    }))
+    .with({ type: "update gamestate" }, ({ fn }) => ({
+      ...state,
+      gameState: fn(state.gameState),
     }))
     .exhaustive();
 }
