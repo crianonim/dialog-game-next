@@ -672,7 +672,7 @@ function DialogActionDebugView({
             {dropdown(<TypeBadge type="screept" />)}
             <TypeBadge invisible={editState.isEdited} type="screept">
               {editableStatement(
-                "input",
+                "textarea",
                 (p) =>
                   D.updateDialogAction(
                     dialogs,

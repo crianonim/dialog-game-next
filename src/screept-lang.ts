@@ -786,6 +786,30 @@ export function stringifyStatement(e: Statement): string {
         { type: "print" },
         ({ value }) => `PRINT ${stringifyExpression(value)}`
       )
+      .with(
+        { type: "bind" },
+        ({ value, identifier }) =>
+          `${stringifyIdentifier(identifier)} = ${stringifyExpression(value)}`
+      )
+      .with(
+        { type: "random" },
+        ({ identifier, from, to }) =>
+          `RND ${stringifyIdentifier(identifier)} ${stringifyExpression(
+            from
+          )} ${stringifyExpression(to)}`
+      )
+      .with(
+        { type: "block" },
+        ({ statements }) =>
+          `{\n ${statements.map(stringifyStatement).join(";\n ")}\n}`
+      )
+      .with(
+        { type: "if" },
+        ({ thenStatement, elseStatement, condition }) =>
+          `IF ${stringifyExpression(condition)} THEN ${stringifyStatement(
+            thenStatement
+          )} ELSE  ${stringifyStatement(elseStatement)}`
+      )
       // .with(
       //   { type: "binary_op" },
       //   ({ op, x, y }) =>
