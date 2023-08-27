@@ -92,10 +92,23 @@ function DialogGame() {
             {environment.output
               .slice()
               .reverse()
-              .map((o) => (
-                <div key={o.ts}>{o.value}</div>
+              .map((o, i) => (
+                <div key={o.ts + i}>{o.value}</div>
               ))}
           </Card>
+          <Button
+            onClick={() => {
+              dispatchGameDefinition({
+                type: "update gamestate",
+                fn: (gs) => ({
+                  ...gs,
+                  screeptEnv: { ...gs.screeptEnv, output: [] },
+                }),
+              });
+            }}
+          >
+            Clear
+          </Button>
         </div>
       </Card>
       <div>
