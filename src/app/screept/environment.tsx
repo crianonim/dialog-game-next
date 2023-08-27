@@ -40,26 +40,6 @@ function EnvironmentView({ environment, dispatch }: EnvironmentViewProps) {
   const [newProcStatement, setNewProcStatement] = useState("");
   return (
     <div className=" text-xs">
-      {/* <div className="w-full"> */}
-      {/* <Table className="w-full">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Name</TableHead>
-              <TableHead>Value</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {Object.entries(environment.vars).map(([name, variable]) => (
-              <TableRow key={name}>
-                <TableCell className="font-medium">{name}</TableCell>
-                <TableCell>
-                  <ValueView value={variable} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
-      {/* </div> */}
       <Card className="p-1">
         {Object.entries(environment.vars)
           .sort()

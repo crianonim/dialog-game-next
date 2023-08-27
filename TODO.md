@@ -1,13 +1,11 @@
 # Game definition
 
-- export/import
-- new one from scratch
-
 ## Dialogs
 
 ## Options
 
 - up/down
+- fixed/always show oprion
 
 ## Actions:
 
@@ -35,3 +33,8 @@ Done
 - sort alphabetically
 - add var
 - remove var
+
+# Game definition
+
+- export/import
+- new one from scratch
