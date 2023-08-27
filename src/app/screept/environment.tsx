@@ -176,6 +176,9 @@ function EnvironmentView({ environment, dispatch }: EnvironmentViewProps) {
                       },
                     ],
                   });
+                  setEditedVariable(null);
+                  setNewVarId("");
+                  setNewVarValue("");
                 }
               } catch (e) {
                 console.log("var add error", { e });
@@ -340,6 +343,9 @@ function EnvironmentView({ environment, dispatch }: EnvironmentViewProps) {
                       },
                     ],
                   });
+                  setEditedVariable(null);
+                  setNewProcName("");
+                  setNewProcStatement("");
                 }
               } catch (e) {
                 console.log("var add error", { e });

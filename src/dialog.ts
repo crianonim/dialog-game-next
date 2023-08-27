@@ -38,9 +38,6 @@ export type Dialog = {
 };
 
 export type Dialogs = Record<string, Dialog>;
-export function print() {
-  console.log({ fabled });
-}
 
 const BAD_DIALOG: Dialog = {
   text: S.l(S.t("Bad Dialog")),
@@ -107,7 +104,6 @@ function executeAction(state: GameState, action: DialogAction): GameState {
       const newOutput: string = S.getStringValue(
         S.evaluateExpression(state.screeptEnv, value, true)
       );
-      console.log({ newOutput });
       return {
         ...state,
         screeptEnv: S.addOutputToEnvironment(state.screeptEnv, newOutput),
@@ -135,7 +131,6 @@ export function gameDefinitionReducer(
   state: GameDefinition,
   action: GameDefinitionAction
 ): GameDefinition {
-  console.log({ action });
   return match(action)
     .with({ type: "gamestate" }, ({ actions }) => ({
       ...state,
