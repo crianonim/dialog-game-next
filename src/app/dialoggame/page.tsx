@@ -60,7 +60,18 @@ function DialogGame() {
       ></textarea> */}
       <Card className="w-[600px] p-4">
         <CardTitle>Fabled Lands</CardTitle>
+
         <div>{getText(dialog.text, gameState.screeptEnv)}</div>
+        {"__statusLine" in environment.vars && (
+          <div className="text-slate-600 text-sm">
+            {S.getStringValue(
+              S.evaluateExpression(
+                environment,
+                S.parseExpression("__statusLine()")
+              )
+            )}
+          </div>
+        )}
         <CardContent className="flex flex-col gap-1 mt-1">
           {options.map((op) => (
             <Button
