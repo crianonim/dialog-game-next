@@ -28,6 +28,7 @@ import {
 import ValueView from "./value";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 function EnvironmentView({ environment, dispatch }: EnvironmentViewProps) {
   const [variableValue, setVariableValue] = useState("");
@@ -185,76 +186,112 @@ function EnvironmentView({ environment, dispatch }: EnvironmentViewProps) {
           </Button>
         </div>
       </Card>
+
+      {/* PROCEDURES */}
       <Card className="p-1">
         {Object.entries(environment.procedures)
           .sort()
           .map(([name, procedure]) => (
             <div key={name} className="flex gap-1 items-center">
-              <button
-                className="w-4 rounded border text-red-600 border-red-600"
-                onClick={() => {
-                  dispatch({
-                    type: "update gamestate",
-                    fn: (gs) => {
-                      const procedures = { ...gs.screeptEnv.procedures };
-                      delete procedures[name];
-                      return {
-                        ...gs,
-                        screeptEnv: {
-                          ...gs.screeptEnv,
-                          procedures: procedures,
-                        },
-                      };
-                    },
-                  });
-                }}
-              >
-                x
-              </button>
-              <div
-                onClick={() => {
-                  setVariableValue(S.stringifyStatement(procedure));
-                  setEditedVariable(name);
-                }}
-              >
-                <ProcedureView key={name} statement={procedure} name={name} />
-              </div>
-              {editedVariable && name === editedVariable && (
-                <div className="flex gap-1 items-center">
-                  <textarea
-                    className="border"
+              {editedVariable && name === editedVariable ? (
+                <div className="flex flex-col gap-1 items-center  w-full">
+                  <div>{name}</div>
+                  <Textarea
+                    spellCheck={false}
+                    className="border w-full text-xs font-mono h-[300px]"
                     value={variableValue}
                     onChange={(e) => setVariableValue(e.target.value)}
                   />
-                  <button
-                    onClick={() => {
-                      try {
-                        const parsed = S.parseStatement(variableValue);
-                        console.log("PROC", { parsed });
-                        dispatch({
-                          type: "gamestate",
-                          actions: [
-                            {
-                              type: "screept",
-                              value: {
-                                type: "proc_def",
-                                statement: parsed,
-                                identifier: { type: "literal", value: name },
+                  {parseError && (
+                    <div className="text-red-800 border rounded p-2">
+                      {parseError}
+                    </div>
+                  )}
+                  <div className="flex gap-2 justify-between ">
+                    <Button
+                      onClick={() => {
+                        try {
+                          const parsed = S.parseStatement(variableValue);
+                          console.log("PROC", { parsed });
+                          dispatch({
+                            type: "gamestate",
+                            actions: [
+                              {
+                                type: "screept",
+                                value: {
+                                  type: "proc_def",
+                                  statement: parsed,
+                                  identifier: { type: "literal", value: name },
+                                },
+                                id: crypto.randomUUID(),
                               },
-                              id: crypto.randomUUID(),
-                            },
-                          ],
-                        });
+                            ],
+                          });
+                          setEditedVariable(null);
+                          setParseError(null);
+                        } catch (e) {
+                          setParseError(e + "");
+                        }
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        try {
+                          S.parseStatement(variableValue);
+                        } catch (e) {
+                          setParseError(e + "");
+                        }
+                      }}
+                    >
+                      Try
+                    </Button>
+                    <Button
+                      onClick={() => {
                         setEditedVariable(null);
                         setParseError(null);
-                      } catch (e) {
-                        setParseError(e + "");
-                      }
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-1 ">
+                  <button
+                    className="w-4 rounded border text-red-600 border-red-600"
+                    onClick={() => {
+                      dispatch({
+                        type: "update gamestate",
+                        fn: (gs) => {
+                          const procedures = { ...gs.screeptEnv.procedures };
+                          delete procedures[name];
+                          return {
+                            ...gs,
+                            screeptEnv: {
+                              ...gs.screeptEnv,
+                              procedures: procedures,
+                            },
+                          };
+                        },
+                      });
                     }}
                   >
-                    Save
+                    x
                   </button>
-                  {parseError && <div>{parseError}</div>}
+                  <div
+                    onClick={() => {
+                      setVariableValue(S.stringifyStatement(procedure));
+                      setEditedVariable(name);
+                    }}
+                  >
+                    <ProcedureView
+                      key={name}
+                      statement={procedure}
+                      name={name}
+                    />
+                  </div>
                 </div>
               )}
             </div>
@@ -314,11 +351,6 @@ function EnvironmentView({ environment, dispatch }: EnvironmentViewProps) {
         </div>
       </Card>
       <div></div>
-      <div>
-        {Object.entries(environment.procedures).map(([name, statement], i) => (
-          <ProcedureView key={name + i} statement={statement} name={name} />
-        ))}
-      </div>
     </div>
   );
 }

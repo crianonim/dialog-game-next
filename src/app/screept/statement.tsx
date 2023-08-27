@@ -56,8 +56,9 @@ function StatementView({ statement }: StatementViewProps) {
             <span>)</span>
           </div>
         ))
-        .otherwise(() => (
-          <div>PROC BODY</div>
+        // .with({type:"÷if"})
+        .otherwise((s) => (
+          <pre>{S.stringifyStatement(s)}</pre>
         ))}
     </div>
   );
