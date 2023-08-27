@@ -106,7 +106,7 @@ const lexer = buildLexer([
   [true, /^PROC/g, TokenKind.ProcDef],
   [true, /^RUN/g, TokenKind.ProcRun],
   [true, /^RND/g, TokenKind.Rnd],
-  [true, /^[a-z_][a-z_0-9]*/g, TokenKind.Identifier],
+  [true, /^[a-z_][A-Za-z_0-9]*/g, TokenKind.Identifier],
   [true, /^\$\[/g, TokenKind.ComputedIdentifierStart],
   [true, /^\]/g, TokenKind.ComputedIdentifierEnd],
   [true, /^\d+(\.\d+)?/g, TokenKind.Number],
