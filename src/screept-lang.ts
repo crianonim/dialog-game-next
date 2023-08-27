@@ -52,12 +52,16 @@ export type Statement =
       type: "if";
       condition: Expression;
       thenStatement: Statement;
-      elseStatement: Statement;
+      elseStatement?: Statement;
     }
   | { type: "proc_def"; identifier: Identifier; statement: Statement }
   | { type: "proc_run"; identifier: Identifier; args: Expression[] }
-  | { type: "random"; identifier: Identifier; from: Expression; to: Expression }
-  | { type: "pass" };
+  | {
+      type: "random";
+      identifier: Identifier;
+      from: Expression;
+      to: Expression;
+    };
 
 //Lexer
 enum TokenKind {
@@ -378,7 +382,7 @@ STMT.setPattern(
         type: "if",
         condition: expr,
         thenStatement: thenStmt,
-        elseStatement: elseStmt || { type: "pass" },
+        elseStatement: elseStmt,
       })
     )
   )
@@ -619,7 +623,9 @@ export function runStatement(
         ({ condition, thenStatement: then, elseStatement }) => {
           if (isTruthy(evaluateExpression(environment, condition)))
             return runStatement(environment, then);
-          else return runStatement(environment, elseStatement);
+          else if (elseStatement)
+            return runStatement(environment, elseStatement);
+          else return environment;
         }
       )
       .with({ type: "proc_def" }, ({ statement, identifier }) => {
@@ -628,9 +634,7 @@ export function runStatement(
           statement;
         return nEnvironment;
       })
-      .with({ type: "pass" }, () => {
-        return environment;
-      })
+
       .with({ type: "proc_run" }, ({ identifier, args }) => {
         const procContent =
           environment.procedures[evaluateIdentifier(environment, identifier)];
@@ -764,7 +768,10 @@ export function stringifyExpression(e: Expression): string {
           stringifyExpression(a)
         )})`
     )
-    .with({ type: "parens" }, ({ expression }) => `(${stringifyExpression})`)
+    .with(
+      { type: "parens" },
+      ({ expression }) => `(${stringifyExpression(expression)})`
+    )
 
     .with({ type: "unary_op" }, ({ op, x }) => `${op}${stringifyExpression(x)}`)
 
@@ -808,7 +815,24 @@ export function stringifyStatement(e: Statement): string {
         ({ thenStatement, elseStatement, condition }) =>
           `IF ${stringifyExpression(condition)} THEN ${stringifyStatement(
             thenStatement
-          )} ELSE  ${stringifyStatement(elseStatement)}`
+          )} ${
+            elseStatement ? `ELSE  ${stringifyStatement(elseStatement)}` : ``
+          }`
+      )
+      .with(
+        { type: "proc_run" },
+        ({ identifier, args }) =>
+          `${stringifyIdentifier(identifier)}(${args.map((a) =>
+            stringifyExpression(a)
+          )})`
+      )
+      .with(
+        { type: "proc_def" },
+        ({ identifier, statement }) =>
+          "PROC " +
+          stringifyIdentifier(identifier) +
+          " " +
+          stringifyStatement(statement)
       )
       // .with(
       //   { type: "binary_op" },
@@ -834,8 +858,6 @@ export function stringifyStatement(e: Statement): string {
       //       onTrue
       //     )} : ${stringifyExpression(onFalse)}`
       // )
-
-      // .exhaustive();
-      .otherwise(() => "")
+      .exhaustive()
   );
 }

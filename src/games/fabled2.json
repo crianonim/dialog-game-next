@@ -1846,8 +1846,7 @@
                     }
                   }
                 ]
-              },
-              "elseStatement": { "type": "pass" }
+              }
             },
             {
               "type": "if",
@@ -2052,16 +2051,13 @@
                               "type": "literal",
                               "value": { "type": "number", "value": 1 }
                             }
-                          },
-                          "elseStatement": { "type": "pass" }
+                          }
                         }
                       ]
-                    },
-                    "elseStatement": { "type": "pass" }
+                    }
                   }
                 ]
-              },
-              "elseStatement": { "type": "pass" }
+              }
             },
             {
               "type": "if",
@@ -2122,8 +2118,7 @@
                       }
                     }
                   ]
-                },
-                "elseStatement": { "type": "pass" }
+                }
               }
             }
           ]
