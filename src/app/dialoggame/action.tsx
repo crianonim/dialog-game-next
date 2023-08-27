@@ -38,6 +38,7 @@ type DialogActionDebugViewProps = {
   optionId: string;
   editState: EditContentState;
   dispatchEdit: (value: EditType) => void;
+  deleteAction?: () => void;
 };
 
 export function DialogActionDebugView({
@@ -46,6 +47,7 @@ export function DialogActionDebugView({
   optionId,
   dispatchEdit,
   editState,
+  deleteAction,
 }: DialogActionDebugViewProps) {
   const { gameDefinition, dispatch } = useContext(DebugContext);
   const gameState = gameDefinition.gameState;
@@ -257,7 +259,7 @@ export function DialogActionDebugView({
       {editState.isEdited && (
         <div className="flex items-center gap-1 p-1">
           {dropdown(<MenuSquare />)}
-          <Trash2 />
+          {deleteAction && <Trash2 onClick={deleteAction} />}
           <ChevronUpSquare />
           <ChevronDownSquare />
           <div className="text-slate-600">ActionID ({action.id})</div>

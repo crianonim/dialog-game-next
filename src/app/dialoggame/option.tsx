@@ -87,7 +87,7 @@ export function OptionDebugView({
         </TypeBadge>
       )}
       <div className="flex flex-col gap-1 pl-1">
-        {option.actions.map((el) => (
+        {option.actions.map((el, i) => (
           <DialogActionDebugView
             key={el.id}
             action={el}
@@ -95,6 +95,23 @@ export function OptionDebugView({
             optionId={option.id}
             dialogId={dialogId}
             dispatchEdit={dispatchEdit}
+            deleteAction={
+              option.actions.length > 1
+                ? () =>
+                    dispatch({
+                      type: "update dialogs",
+                      dialogs: D.updateDialogOption(
+                        dialogs,
+                        dialogId,
+                        option.id,
+                        (o) => ({
+                          ...o,
+                          actions: o.actions.filter((a) => a.id != el.id),
+                        })
+                      ),
+                    })
+                : undefined
+            }
           />
         ))}
       </div>
@@ -122,6 +139,55 @@ export function OptionDebugView({
           >
             Add Action
           </Button>
+          <Button
+            onClick={() => {
+              const options = dialogs[dialogId].options;
+              const indx = options.findIndex((x) => x.id === option.id);
+              const newOptions: D.DialogOption[] =
+                indx > 0
+                  ? [
+                      ...options.slice(0, indx - 1),
+                      option,
+                      options[indx - 1],
+                      ...options.slice(indx + 1),
+                    ]
+                  : options;
+              dispatch({
+                type: "update dialogs",
+                dialogs: D.updateDialog(dialogs, dialogId, (d) => ({
+                  ...d,
+                  options: newOptions,
+                })),
+              });
+            }}
+          >
+            Move Up
+          </Button>
+          <Button
+            onClick={() => {
+              const options = dialogs[dialogId].options;
+              const indx = options.findIndex((x) => x.id === option.id);
+              const newOptions: D.DialogOption[] =
+                indx < options.length - 1
+                  ? [
+                      ...options.slice(0, indx),
+                      options[indx + 1],
+                      option,
+                      ...options.slice(indx + 2),
+                    ]
+                  : options;
+              dispatch({
+                type: "update dialogs",
+                dialogs: D.updateDialog(dialogs, dialogId, (d) => ({
+                  ...d,
+                  options: newOptions,
+                })),
+              });
+            }}
+          >
+            Move Down
+          </Button>
+
           <Button
             onClick={() => {
               const newDialogs = D.updateDialog(dialogs, dialogId, (d) => ({
