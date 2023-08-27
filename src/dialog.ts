@@ -256,3 +256,17 @@ export function generateNewDialog(id: string): Dialog {
     options: [],
   };
 }
+
+export function generateNewGameDefinition(): GameDefinition {
+  return {
+    dialogs: { start: generateNewDialog("start") },
+    gameState: {
+      screeptEnv: {
+        vars: {},
+        procedures: {},
+        output: [],
+      },
+      dialogStack: ["start"],
+    },
+  };
+}

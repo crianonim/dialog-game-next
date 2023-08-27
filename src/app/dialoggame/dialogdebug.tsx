@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import GameDebugAdmin from "./admin";
 type EditType =
   | { type: "startEditing"; value: string; target: EditTarget }
   | { type: "updateValue"; value: string }
@@ -434,6 +435,7 @@ function DialogDebug({ dialog }: DialogDebugProps) {
           </Button>
         )}
       </Card>
+      <GameDebugAdmin />
       <EnvironmentView environment={environment} dispatch={dispatch} />
     </>
   );

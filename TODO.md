@@ -25,13 +25,12 @@
 
 # Screept
 
-- complete stringify
-
 ---
 
 Done
 
-vars:
+- complete stringify
+  vars:
 
 - sort alphabetically
 - add var
