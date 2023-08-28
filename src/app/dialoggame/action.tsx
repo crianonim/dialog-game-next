@@ -32,6 +32,7 @@ import {
 import * as S from "../../screept-lang";
 import * as D from "../../dialog";
 import { Button } from "@/components/ui/button";
+import { DebugActionGroup } from "./actionGroup";
 type DialogActionDebugViewProps = {
   action: D.DialogAction;
   dialogId: string;
@@ -93,14 +94,18 @@ export function DialogActionDebugView({
               return {
                 type: "conditional",
                 if: S.parseExpression(`1`),
-                then: {
-                  type: "go back",
-                  id: crypto.randomUUID(),
-                } as D.DialogAction,
-                else: {
-                  type: "go back",
-                  id: crypto.randomUUID(),
-                } as D.DialogAction,
+                then: [
+                  {
+                    type: "go back",
+                    id: crypto.randomUUID(),
+                  } as D.DialogAction,
+                ],
+                else: [
+                  {
+                    type: "go back",
+                    id: crypto.randomUUID(),
+                  } as D.DialogAction,
+                ],
                 id: action.id,
               } as D.DialogAction;
             })
@@ -216,17 +221,17 @@ export function DialogActionDebugView({
                   dispatch
                 )}
                 <span>?</span>
-                <DialogActionDebugView
+                <DebugActionGroup
                   dialogId={dialogId}
-                  action={c.then}
+                  actions={c.then}
                   dispatchEdit={dispatchEdit}
                   optionId={optionId}
                   editState={editState}
                 />
                 <span>:</span>
-                <DialogActionDebugView
+                <DebugActionGroup
                   dialogId={dialogId}
-                  action={c.else}
+                  actions={c.else}
                   dispatchEdit={dispatchEdit}
                   optionId={optionId}
                   editState={editState}
@@ -268,3 +273,5 @@ export function DialogActionDebugView({
     </div>
   );
 }
+
+export default DialogActionDebugView;

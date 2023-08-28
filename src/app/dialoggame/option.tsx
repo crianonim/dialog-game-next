@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { EditContentState, EditType, editableExpression } from "./editable";
-import { DialogActionDebugView } from "./action";
+import DebugActionGroup from "./actionGroup";
 
 type OptionDebugViewProps = {
   option: D.DialogOption;
@@ -87,33 +87,13 @@ export function OptionDebugView({
         </TypeBadge>
       )}
       <div className="flex flex-col gap-1 pl-1">
-        {option.actions.map((el, i) => (
-          <DialogActionDebugView
-            key={el.id}
-            action={el}
-            editState={editState}
-            optionId={option.id}
-            dialogId={dialogId}
-            dispatchEdit={dispatchEdit}
-            deleteAction={
-              option.actions.length > 1
-                ? () =>
-                    dispatch({
-                      type: "update dialogs",
-                      dialogs: D.updateDialogOption(
-                        dialogs,
-                        dialogId,
-                        option.id,
-                        (o) => ({
-                          ...o,
-                          actions: o.actions.filter((a) => a.id != el.id),
-                        })
-                      ),
-                    })
-                : undefined
-            }
-          />
-        ))}
+        <DebugActionGroup
+          actions={option.actions}
+          editState={editState}
+          optionId={option.id}
+          dialogId={dialogId}
+          dispatchEdit={dispatchEdit}
+        />
       </div>
       {editState.isEdited && (
         <div className="flex justify-between">

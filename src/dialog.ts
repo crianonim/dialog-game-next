@@ -11,8 +11,8 @@ export type DialogAction =
   | {
       type: "conditional";
       if: S.Expression;
-      then: DialogAction;
-      else: DialogAction;
+      then: DialogAction[];
+      else: DialogAction[];
       id: string;
     }
   | { type: "block"; actions: DialogAction[]; id: string };
@@ -93,8 +93,8 @@ function executeAction(state: GameState, action: DialogAction): GameState {
         S.evaluateExpression(state.screeptEnv, a.if, true)
       );
       return condition
-        ? executeAction(state, a.then)
-        : executeAction(state, a.else);
+        ? gameStateReducer(state, a.then)
+        : gameStateReducer(state, a.else);
     })
     .with({ type: "screept" }, ({ value }) => ({
       ...state,
@@ -221,8 +221,8 @@ export function updateDialogAction(
     return a.type === "conditional" && a.id !== actionId
       ? {
           ...a,
-          then: updateActionInTree(a.then),
-          else: updateActionInTree(a.else),
+          then: a.then.map(updateActionInTree),
+          else: a.else.map(updateActionInTree),
         }
       : a.id === actionId
       ? fn(a)

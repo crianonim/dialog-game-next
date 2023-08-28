@@ -180,12 +180,16 @@
             },
             {
               "if": "test_success",
-              "then": {
-                "go_dialog": "#630"
-              },
-              "else": {
-                "go_dialog": "#36"
-              }
+              "then": [
+                {
+                  "go_dialog": "#630"
+                }
+              ],
+              "else": [
+                {
+                  "go_dialog": "#36"
+                }
+              ]
             }
           ]
         }
@@ -218,18 +222,26 @@
           "action": [
             {
               "if": "(player_profession == 1)",
-              "then": {
-                "if": "box_645",
-                "then": {
-                  "go_dialog": "#248"
-                },
-                "else": {
-                  "go_dialog": "#645"
+              "then": [
+                {
+                  "if": "box_645",
+                  "then": [
+                    {
+                      "go_dialog": "#248"
+                    }
+                  ],
+                  "else": [
+                    {
+                      "go_dialog": "#645"
+                    }
+                  ]
                 }
-              },
-              "else": {
-                "go_dialog": "#678"
-              }
+              ],
+              "else": [
+                {
+                  "go_dialog": "#678"
+                }
+              ]
             }
           ]
         }
@@ -247,12 +259,16 @@
             },
             {
               "if": "(player_stamina < 1)",
-              "then": {
-                "go_dialog": "game_over"
-              },
-              "else": {
-                "go_dialog": "#36_"
-              }
+              "then": [
+                {
+                  "go_dialog": "game_over"
+                }
+              ],
+              "else": [
+                {
+                  "go_dialog": "#36_"
+                }
+              ]
             }
           ]
         }
@@ -293,9 +309,11 @@
           "action": [
             {
               "if": "fight_won",
-              "then": {
-                "go_dialog": "#148"
-              },
+              "then": [
+                {
+                  "go_dialog": "#148"
+                }
+              ],
               "else": [
                 {
                   "screept": "{ money = 0; player_stamina = 1}"
@@ -364,12 +382,16 @@
             },
             {
               "if": "0",
-              "then": {
-                "go_dialog": "#195"
-              },
-              "else": {
-                "go_dialog": "#678"
-              }
+              "then": [
+                {
+                  "go_dialog": "#195"
+                }
+              ],
+              "else": [
+                {
+                  "go_dialog": "#678"
+                }
+              ]
             }
           ]
         }
@@ -433,12 +455,16 @@
             },
             {
               "if": "$[test_success]",
-              "then": {
-                "go_dialog": "#679"
-              },
-              "else": {
-                "go_dialog": "#36"
-              }
+              "then": [
+                {
+                  "go_dialog": "#679"
+                }
+              ],
+              "else": [
+                {
+                  "go_dialog": "#36"
+                }
+              ]
             }
           ]
         }

@@ -397,8 +397,8 @@
                 "type": "var",
                 "identifier": { "type": "literal", "value": "test_success" }
               },
-              "then": { "type": "go_dialog", "destination": "#630" },
-              "else": { "type": "go_dialog", "destination": "#36" },
+              "then": [{ "type": "go_dialog", "destination": "#630" }],
+              "else": [{ "type": "go_dialog", "destination": "#36" }],
               "id": "c922c811-1d30-44b7-a2f9-8c019ef03d08"
             }
           ],
@@ -649,16 +649,18 @@
                   }
                 }
               },
-              "then": {
-                "type": "conditional",
-                "if": {
-                  "type": "var",
-                  "identifier": { "type": "literal", "value": "box_645" }
-                },
-                "then": { "type": "go_dialog", "destination": "#248" },
-                "else": { "type": "go_dialog", "destination": "#645" }
-              },
-              "else": { "type": "go_dialog", "destination": "#678" },
+              "then": [
+                {
+                  "type": "conditional",
+                  "if": {
+                    "type": "var",
+                    "identifier": { "type": "literal", "value": "box_645" }
+                  },
+                  "then": [{ "type": "go_dialog", "destination": "#248" }],
+                  "else": [{ "type": "go_dialog", "destination": "#645" }]
+                }
+              ],
+              "else": [{ "type": "go_dialog", "destination": "#678" }],
               "id": "1bb6bf50-d306-49aa-a7a5-d074f377df1b"
             }
           ],
@@ -736,8 +738,8 @@
                   }
                 }
               },
-              "then": { "type": "go_dialog", "destination": "game_over" },
-              "else": { "type": "go_dialog", "destination": "#36_" },
+              "then": [{ "type": "go_dialog", "destination": "game_over" }],
+              "else": [{ "type": "go_dialog", "destination": "#36_" }],
               "id": "a583636c-5b63-4716-8420-2b8b0158ce07"
             }
           ],
@@ -977,40 +979,37 @@
                 "type": "var",
                 "identifier": { "type": "literal", "value": "fight_won" }
               },
-              "then": { "type": "go_dialog", "destination": "#148" },
-              "else": {
-                "type": "block",
-                "actions": [
-                  {
-                    "type": "screept",
-                    "value": {
-                      "type": "block",
-                      "statements": [
-                        {
-                          "type": "bind",
-                          "identifier": { "type": "literal", "value": "money" },
-                          "value": {
-                            "type": "literal",
-                            "value": { "type": "number", "value": 0 }
-                          }
-                        },
-                        {
-                          "type": "bind",
-                          "identifier": {
-                            "type": "literal",
-                            "value": "player_stamina"
-                          },
-                          "value": {
-                            "type": "literal",
-                            "value": { "type": "number", "value": 1 }
-                          }
+              "then": [{ "type": "go_dialog", "destination": "#148" }],
+              "else": [
+                {
+                  "type": "screept",
+                  "value": {
+                    "type": "block",
+                    "statements": [
+                      {
+                        "type": "bind",
+                        "identifier": { "type": "literal", "value": "money" },
+                        "value": {
+                          "type": "literal",
+                          "value": { "type": "number", "value": 0 }
                         }
-                      ]
-                    }
-                  },
-                  { "type": "go_dialog", "destination": "#195" }
-                ]
-              },
+                      },
+                      {
+                        "type": "bind",
+                        "identifier": {
+                          "type": "literal",
+                          "value": "player_stamina"
+                        },
+                        "value": {
+                          "type": "literal",
+                          "value": { "type": "number", "value": 1 }
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "type": "go_dialog", "destination": "#195" }
+              ],
               "id": "314de2b1-b08f-4983-98aa-505dd84f1a9a"
             }
           ],
@@ -1155,8 +1154,8 @@
                 "type": "literal",
                 "value": { "type": "number", "value": 0 }
               },
-              "then": { "type": "go_dialog", "destination": "#195" },
-              "else": { "type": "go_dialog", "destination": "#678" },
+              "then": [{ "type": "go_dialog", "destination": "#195" }],
+              "else": [{ "type": "go_dialog", "destination": "#678" }],
               "id": "82aeddb2-d781-4973-9ad9-aa761ddd46c8"
             }
           ],
@@ -1319,8 +1318,8 @@
                   }
                 }
               },
-              "then": { "type": "go_dialog", "destination": "#679" },
-              "else": { "type": "go_dialog", "destination": "#36" },
+              "then": [{ "type": "go_dialog", "destination": "#679" }],
+              "else": [{ "type": "go_dialog", "destination": "#36" }],
               "id": "8c2c71ed-57d0-46bc-9f1e-c5d6e924130b"
             }
           ],
