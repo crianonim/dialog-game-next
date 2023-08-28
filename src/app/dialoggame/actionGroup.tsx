@@ -40,6 +40,7 @@ type DebugActionGroupProps = {
   optionId: string;
   editState: EditContentState;
   dispatchEdit: (value: EditType) => void;
+  parentAction?: D.DialogAction;
 };
 
 export function DebugActionGroup({
@@ -48,8 +49,10 @@ export function DebugActionGroup({
   optionId,
   editState,
   dispatchEdit,
+  parentAction,
 }: DebugActionGroupProps) {
-  console.log({ actions });
+  const { gameDefinition, dispatch } = useContext(DebugContext);
+  const { gameState, dialogs } = gameDefinition;
   // const deleteAction={
   //     option.actions.length > 1
   //       ? () =>
@@ -69,7 +72,7 @@ export function DebugActionGroup({
   //   }
 
   return (
-    <div>
+    <div className="border border-red-600">
       {actions.map((a) => (
         <DialogActionDebugView
           key={a.id}
@@ -80,6 +83,39 @@ export function DebugActionGroup({
           dispatchEdit={dispatchEdit}
         />
       ))}
+      {editState.isEdited && (
+        <div className="flex justify-between">
+          <Button
+            onClick={() => {
+              const newAction: D.DialogAction = {
+                type: "screept",
+                value: S.parseStatement(`PRINT "Hello!"`),
+                id: crypto.randomUUID(),
+              };
+              //   function addToActionWithParent(
+              //     acts: D.DialogAction
+              //   ): D.DialogAction {
+              //     if (acts.id === parentAction?.id) return
+              //     if (acts.type==="conditional") then
+              //     return acts;
+              //   }
+              const newDialogs = D.updateDialogOption(
+                dialogs,
+                dialogId,
+                optionId,
+                (o) => ({
+                  ...o,
+                  actions: [...o.actions, newAction],
+                })
+              );
+              dispatch({ type: "update dialogs", dialogs: newDialogs });
+            }}
+            variant="secondary"
+          >
+            Add Action
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -99,28 +99,6 @@ export function OptionDebugView({
         <div className="flex justify-between">
           <Button
             onClick={() => {
-              const newAction: D.DialogAction = {
-                type: "screept",
-                value: S.parseStatement(`PRINT "Hello!"`),
-                id: crypto.randomUUID(),
-              };
-              const newDialogs = D.updateDialogOption(
-                dialogs,
-                dialogId,
-                option.id,
-                (o) => ({
-                  ...o,
-                  actions: [...o.actions, newAction],
-                })
-              );
-              dispatch({ type: "update dialogs", dialogs: newDialogs });
-            }}
-            variant="secondary"
-          >
-            Add Action
-          </Button>
-          <Button
-            onClick={() => {
               const options = dialogs[dialogId].options;
               const indx = options.findIndex((x) => x.id === option.id);
               const newOptions: D.DialogOption[] =

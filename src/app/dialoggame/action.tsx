@@ -227,6 +227,7 @@ export function DialogActionDebugView({
                   dispatchEdit={dispatchEdit}
                   optionId={optionId}
                   editState={editState}
+                  parentAction={action}
                 />
                 <span>:</span>
                 <DebugActionGroup
@@ -235,11 +236,13 @@ export function DialogActionDebugView({
                   dispatchEdit={dispatchEdit}
                   optionId={optionId}
                   editState={editState}
+                  parentAction={action}
                 />
               </div>
             </TypeBadge>
           </div>
         ))
+        //TODO REMOVE type
         .with({ type: "block" }, ({ actions }) => (
           <div>
             {actions.map((el) => (
