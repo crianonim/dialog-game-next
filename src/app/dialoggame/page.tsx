@@ -16,43 +16,44 @@ import DialogDebug from "./dialogdebug";
 import { Combobox } from "./dialogselector";
 import ErrorBoundary from "@/components/errorBoundary";
 import { DebugContext } from "./context";
-import fabledDefinition from "../../games/fabled2.json";
+import fabledDefinition from "../../games/fabled.json";
 import GameDebugAdmin from "./admin";
 const loadedGameDefinition = fabledDefinition as D.GameDefinition;
-const initialGameDefinition: D.GameDefinition = {
-  ...loadedGameDefinition,
-  dialogs: Object.fromEntries(
-    Object.entries(loadedGameDefinition.dialogs).map(([dId, dialog]) => [
-      dId,
-      addIdsToDialogItems(dialog),
-    ])
-  ),
-};
-function addIdsToDialogItems(dialog: D.Dialog) {
-  return {
-    ...dialog,
-    options: dialog.options.map((o) => ({
-      ...addId(o),
-      actions: addIdToActionGroup(o.actions),
-    })),
-  };
-}
+const initialGameDefinition = loadedGameDefinition;
+// const initialGameDefinition: D.GameDefinition = {
+//   ...loadedGameDefinition,
+//   dialogs: Object.fromEntries(
+//     Object.entries(loadedGameDefinition.dialogs).map(([dId, dialog]) => [
+//       dId,
+//       addIdsToDialogItems(dialog),
+//     ])
+//   ),
+// };
+// function addIdsToDialogItems(dialog: D.Dialog) {
+//   return {
+//     ...dialog,
+//     options: dialog.options.map((o) => ({
+//       ...addId(o),
+//       actions: addIdToActionGroup(o.actions),
+//     })),
+//   };
+// }
 
-function addIdToActionGroup(actions: D.DialogAction[]): D.DialogAction[] {
-  return actions.map((a) => {
-    const updated = addId(a);
-    if (updated.type === "conditional")
-      return {
-        ...updated,
-        then: addIdToActionGroup(updated.then),
-        else: addIdToActionGroup(updated.else),
-      };
-    else return updated;
-  });
-}
-function addId<T extends D.DialogOption | D.DialogAction>(e: T): T {
-  return { ...e, id: crypto.randomUUID() };
-}
+// function addIdToActionGroup(actions: D.DialogAction[]): D.DialogAction[] {
+//   return actions.map((a) => {
+//     const updated = addId(a);
+//     if (updated.type === "conditional")
+//       return {
+//         ...updated,
+//         then: addIdToActionGroup(updated.then),
+//         else: addIdToActionGroup(updated.else),
+//       };
+//     else return updated;
+//   });
+// }
+// function addId<T extends D.DialogOption | D.DialogAction>(e: T): T {
+//   return { ...e, id: crypto.randomUUID() };
+// }
 
 function getText(e: S.Expression, env: S.Environment): React.ReactNode {
   const splitString: string[] = S.getStringValue(

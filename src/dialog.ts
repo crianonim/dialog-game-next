@@ -1,5 +1,5 @@
 import * as S from "./screept-lang";
-import fabled from "./games/fabled.json";
+import fabled from "./games/custom.json";
 import { match } from "ts-pattern";
 export type GameState = { dialogStack: string[]; screeptEnv: S.Environment };
 

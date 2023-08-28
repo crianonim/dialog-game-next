@@ -6,7 +6,7 @@ type DebugContextType = {
 
   dispatch: React.Dispatch<D.GameDefinitionAction>;
 };
-import fabledDefinition from "../../games/fabled2.json";
+import fabledDefinition from "../../games/fabled.json";
 const gameDefinition: D.GameDefinition = fabledDefinition as D.GameDefinition;
 const dialogs: Record<string, D.Dialog> = gameDefinition.dialogs;
 
