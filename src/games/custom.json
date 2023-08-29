@@ -2,7 +2,7 @@
   "gameState": {
     "screeptEnv": {
       "vars": {
-        "turn": { "type": "number", "value": 130 },
+        "turn": { "type": "number", "value": 190 },
         "money": { "type": "number", "value": 100 },
         "__statusLine": {
           "type": "func",
@@ -17,43 +17,60 @@
                   "x": {
                     "type": "binary_op",
                     "x": {
-                      "type": "literal",
-                      "value": { "type": "text", "value": "Turn: " }
+                      "type": "binary_op",
+                      "x": {
+                        "type": "binary_op",
+                        "x": {
+                          "type": "literal",
+                          "value": { "type": "text", "value": "Turn: " }
+                        },
+                        "op": "+",
+                        "y": {
+                          "type": "var",
+                          "identifier": { "type": "literal", "value": "turn" }
+                        }
+                      },
+                      "op": "+",
+                      "y": {
+                        "type": "literal",
+                        "value": { "type": "text", "value": ". You have " }
+                      }
                     },
                     "op": "+",
                     "y": {
                       "type": "var",
-                      "identifier": { "type": "literal", "value": "turn" }
+                      "identifier": { "type": "literal", "value": "money" }
                     }
                   },
                   "op": "+",
                   "y": {
                     "type": "literal",
-                    "value": { "type": "text", "value": ". You have " }
+                    "value": { "type": "text", "value": " coins. Stamina: " }
                   }
                 },
                 "op": "+",
                 "y": {
                   "type": "var",
-                  "identifier": { "type": "literal", "value": "money" }
+                  "identifier": { "type": "literal", "value": "stamina" }
                 }
               },
               "op": "+",
               "y": {
                 "type": "literal",
-                "value": { "type": "text", "value": " coins. Stamina: " }
+                "value": { "type": "text", "value": ". " }
               }
             },
             "op": "+",
             "y": {
-              "type": "var",
-              "identifier": { "type": "literal", "value": "stamina" }
+              "type": "fun_call",
+              "identifier": { "type": "literal", "value": "displayTime" },
+              "args": []
             }
           }
         },
-        "stamina": { "type": "number", "value": 80 },
+        "stamina": { "type": "number", "value": 60 },
         "r1": { "type": "number", "value": 3 },
-        "inv_wood": { "type": "number", "value": 6 },
+        "inv_wood": { "type": "number", "value": 13 },
         "mod": {
           "type": "func",
           "value": {
@@ -87,12 +104,210 @@
               }
             }
           }
+        },
+        "_minutes_by_turn": { "type": "number", "value": 15 },
+        "_turns_by_hour": { "type": "number", "value": 4 },
+        "_turns_by_day": { "type": "number", "value": 96 },
+        "day": { "type": "number", "value": 1 },
+        "hour": { "type": "number", "value": 23 },
+        "minutes": { "type": "number", "value": 30 },
+        "displayTime": {
+          "type": "func",
+          "value": {
+            "type": "binary_op",
+            "x": {
+              "type": "binary_op",
+              "x": {
+                "type": "binary_op",
+                "x": {
+                  "type": "binary_op",
+                  "x": {
+                    "type": "binary_op",
+                    "x": {
+                      "type": "literal",
+                      "value": { "type": "text", "value": "Day " }
+                    },
+                    "op": "+",
+                    "y": {
+                      "type": "parens",
+                      "expression": {
+                        "type": "binary_op",
+                        "x": {
+                          "type": "var",
+                          "identifier": { "type": "literal", "value": "day" }
+                        },
+                        "op": "+",
+                        "y": {
+                          "type": "literal",
+                          "value": { "type": "number", "value": 1 }
+                        }
+                      }
+                    }
+                  },
+                  "op": "+",
+                  "y": {
+                    "type": "literal",
+                    "value": { "type": "text", "value": ", " }
+                  }
+                },
+                "op": "+",
+                "y": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "hour" }
+                }
+              },
+              "op": "+",
+              "y": {
+                "type": "literal",
+                "value": { "type": "text", "value": ":" }
+              }
+            },
+            "op": "+",
+            "y": {
+              "type": "parens",
+              "expression": {
+                "type": "conditon",
+                "condition": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "minutes" }
+                },
+                "onTrue": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "minutes" }
+                },
+                "onFalse": {
+                  "type": "literal",
+                  "value": { "type": "text", "value": "00" }
+                }
+              }
+            }
+          }
+        },
+        "_0": { "type": "number", "value": 10 }
+      },
+      "procedures": {
+        "setTime": {
+          "type": "block",
+          "statements": [
+            {
+              "type": "bind",
+              "identifier": { "type": "literal", "value": "day" },
+              "value": {
+                "type": "binary_op",
+                "op": "//",
+                "x": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "turn" }
+                },
+                "y": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "_turns_by_day" }
+                }
+              }
+            },
+            {
+              "type": "bind",
+              "identifier": { "type": "literal", "value": "hour" },
+              "value": {
+                "type": "binary_op",
+                "op": "//",
+                "x": {
+                  "type": "fun_call",
+                  "identifier": { "type": "literal", "value": "mod" },
+                  "args": [
+                    {
+                      "type": "var",
+                      "identifier": { "type": "literal", "value": "turn" }
+                    },
+                    {
+                      "type": "var",
+                      "identifier": {
+                        "type": "literal",
+                        "value": "_turns_by_day"
+                      }
+                    }
+                  ]
+                },
+                "y": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "_turns_by_hour" }
+                }
+              }
+            },
+            {
+              "type": "bind",
+              "identifier": { "type": "literal", "value": "minutes" },
+              "value": {
+                "type": "binary_op",
+                "x": {
+                  "type": "fun_call",
+                  "identifier": { "type": "literal", "value": "mod" },
+                  "args": [
+                    {
+                      "type": "var",
+                      "identifier": { "type": "literal", "value": "turn" }
+                    },
+                    {
+                      "type": "var",
+                      "identifier": {
+                        "type": "literal",
+                        "value": "_turns_by_hour"
+                      }
+                    }
+                  ]
+                },
+                "op": "*",
+                "y": {
+                  "type": "var",
+                  "identifier": {
+                    "type": "literal",
+                    "value": "_minutes_by_turn"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "passTurn": {
+          "type": "block",
+          "statements": [
+            {
+              "type": "bind",
+              "identifier": { "type": "literal", "value": "turn" },
+              "value": {
+                "type": "binary_op",
+                "x": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "turn" }
+                },
+                "op": "+",
+                "y": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "_0" }
+                }
+              }
+            },
+            {
+              "type": "proc_run",
+              "identifier": { "type": "literal", "value": "setTime" },
+              "args": []
+            }
+          ]
         }
       },
-      "procedures": {},
       "output": []
     },
-    "dialogStack": ["forest", "start", "farm", "start", "farm", "start"]
+    "dialogStack": [
+      "start",
+      "farm",
+      "start",
+      "farm",
+      "start",
+      "farm",
+      "start",
+      "farm",
+      "start"
+    ]
   },
   "dialogs": {
     "start": {
@@ -212,20 +427,14 @@
                     }
                   },
                   {
-                    "type": "bind",
-                    "identifier": { "type": "literal", "value": "turn" },
-                    "value": {
-                      "type": "binary_op",
-                      "x": {
-                        "type": "var",
-                        "identifier": { "type": "literal", "value": "turn" }
-                      },
-                      "op": "+",
-                      "y": {
+                    "type": "proc_run",
+                    "identifier": { "type": "literal", "value": "passTurn" },
+                    "args": [
+                      {
                         "type": "literal",
                         "value": { "type": "number", "value": 10 }
                       }
-                    }
+                    ]
                   }
                 ]
               },
@@ -243,10 +452,7 @@
       "id": "forest",
       "text": {
         "type": "literal",
-        "value": {
-          "type": "text",
-          "value": "You are in the forest and there is a lot to write here <nl> but I will not be using too mych writing here."
-        }
+        "value": { "type": "text", "value": "You are in the forest." }
       },
       "options": [
         {
