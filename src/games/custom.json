@@ -2,7 +2,7 @@
   "gameState": {
     "screeptEnv": {
       "vars": {
-        "turn": { "type": "number", "value": 190 },
+        "turn": { "type": "number", "value": 220 },
         "money": { "type": "number", "value": 100 },
         "__statusLine": {
           "type": "func",
@@ -68,9 +68,9 @@
             }
           }
         },
-        "stamina": { "type": "number", "value": 60 },
+        "stamina": { "type": "number", "value": 100 },
         "r1": { "type": "number", "value": 3 },
-        "inv_wood": { "type": "number", "value": 13 },
+        "inv_wood": { "type": "number", "value": 23 },
         "mod": {
           "type": "func",
           "value": {
@@ -183,7 +183,43 @@
             }
           }
         },
-        "_0": { "type": "number", "value": 10 }
+        "_0": { "type": "number", "value": 10 },
+        "_specialOption": { "type": "text", "value": "menu" },
+        "displayInv": {
+          "type": "func",
+          "value": {
+            "type": "conditon",
+            "condition": {
+              "type": "var",
+              "identifier": { "type": "literal", "value": "_0" }
+            },
+            "onTrue": {
+              "type": "binary_op",
+              "x": {
+                "type": "binary_op",
+                "x": {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "_1" }
+                },
+                "op": "+",
+                "y": {
+                  "type": "literal",
+                  "value": { "type": "text", "value": ": " }
+                }
+              },
+              "op": "+",
+              "y": {
+                "type": "var",
+                "identifier": { "type": "literal", "value": "_0" }
+              }
+            },
+            "onFalse": {
+              "type": "literal",
+              "value": { "type": "text", "value": "" }
+            }
+          }
+        },
+        "inv_berries": { "type": "number", "value": 86 }
       },
       "procedures": {
         "setTime": {
@@ -298,6 +334,15 @@
       "output": []
     },
     "dialogStack": [
+      "start",
+      "farm",
+      "_specialconsume",
+      "_specialConsume",
+      "menu",
+      "_specialconsume",
+      "forest",
+      "start",
+      "menu",
       "start",
       "farm",
       "start",
@@ -566,6 +611,235 @@
               "type": "literal",
               "value": { "type": "number", "value": 9 }
             }
+          }
+        }
+      ]
+    },
+    "menu": {
+      "id": "menu",
+      "text": {
+        "type": "binary_op",
+        "x": {
+          "type": "binary_op",
+          "x": {
+            "type": "binary_op",
+            "x": {
+              "type": "literal",
+              "value": { "type": "text", "value": "You have " }
+            },
+            "op": "+",
+            "y": {
+              "type": "fun_call",
+              "identifier": { "type": "literal", "value": "displayInv" },
+              "args": [
+                {
+                  "type": "var",
+                  "identifier": { "type": "literal", "value": "inv_wood" }
+                },
+                {
+                  "type": "literal",
+                  "value": { "type": "text", "value": "wood" }
+                }
+              ]
+            }
+          },
+          "op": "+",
+          "y": { "type": "literal", "value": { "type": "text", "value": ", " } }
+        },
+        "op": "+",
+        "y": {
+          "type": "fun_call",
+          "identifier": { "type": "literal", "value": "displayInv" },
+          "args": [
+            {
+              "type": "var",
+              "identifier": { "type": "literal", "value": "inv_berries" }
+            },
+            {
+              "type": "literal",
+              "value": { "type": "text", "value": "berries" }
+            }
+          ]
+        }
+      },
+      "options": [
+        {
+          "id": "18277606-cbc3-4579-9241-ae389dcbe50e",
+          "actions": [
+            {
+              "type": "go_dialog",
+              "destination": "_specialConsume",
+              "id": "8b782875-b946-44ec-916a-9f3db5483cc7"
+            }
+          ],
+          "text": {
+            "type": "literal",
+            "value": { "type": "text", "value": "Consume" }
+          }
+        },
+        {
+          "id": "1f5c5219-16c6-4d28-acd9-0d90bd3ab102",
+          "actions": [
+            {
+              "type": "screept",
+              "value": {
+                "type": "bind",
+                "identifier": { "type": "literal", "value": "_specialOption" },
+                "value": {
+                  "type": "literal",
+                  "value": { "type": "text", "value": "menu" }
+                }
+              },
+              "id": "3c1069f1-31a5-47a3-98b4-81ec309f1416"
+            },
+            { "type": "go back", "id": "4b99cb22-fe2b-42c8-adba-a8d44ee698c4" }
+          ],
+          "text": {
+            "type": "literal",
+            "value": { "type": "text", "value": "Go Back" }
+          }
+        }
+      ]
+    },
+    "_specialConsume": {
+      "id": "_specialConsume",
+      "text": {
+        "type": "literal",
+        "value": { "type": "text", "value": "Use item" }
+      },
+      "options": [
+        {
+          "id": "5a7af0e7-12e9-41f3-9586-d8b7da90d184",
+          "actions": [
+            {
+              "type": "screept",
+              "value": {
+                "type": "block",
+                "statements": [
+                  {
+                    "type": "bind",
+                    "identifier": { "type": "literal", "value": "inv_berries" },
+                    "value": {
+                      "type": "binary_op",
+                      "x": {
+                        "type": "var",
+                        "identifier": {
+                          "type": "literal",
+                          "value": "inv_berries"
+                        }
+                      },
+                      "op": "-",
+                      "y": {
+                        "type": "literal",
+                        "value": { "type": "number", "value": 1 }
+                      }
+                    }
+                  },
+                  {
+                    "type": "bind",
+                    "identifier": { "type": "literal", "value": "stamina" },
+                    "value": {
+                      "type": "conditon",
+                      "condition": {
+                        "type": "parens",
+                        "expression": {
+                          "type": "binary_op",
+                          "op": ">",
+                          "x": {
+                            "type": "binary_op",
+                            "x": {
+                              "type": "var",
+                              "identifier": {
+                                "type": "literal",
+                                "value": "stamina"
+                              }
+                            },
+                            "op": "+",
+                            "y": {
+                              "type": "literal",
+                              "value": { "type": "number", "value": 20 }
+                            }
+                          },
+                          "y": {
+                            "type": "literal",
+                            "value": { "type": "number", "value": 100 }
+                          }
+                        }
+                      },
+                      "onTrue": {
+                        "type": "literal",
+                        "value": { "type": "number", "value": 100 }
+                      },
+                      "onFalse": {
+                        "type": "binary_op",
+                        "x": {
+                          "type": "var",
+                          "identifier": {
+                            "type": "literal",
+                            "value": "stamina"
+                          }
+                        },
+                        "op": "+",
+                        "y": {
+                          "type": "literal",
+                          "value": { "type": "number", "value": 20 }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "print",
+                    "value": {
+                      "type": "literal",
+                      "value": { "type": "text", "value": "You ate a berry." }
+                    }
+                  }
+                ]
+              },
+              "id": "eb953f6d-3fb9-4912-8c4e-cd41a2f77d27"
+            }
+          ],
+          "text": {
+            "type": "binary_op",
+            "x": {
+              "type": "binary_op",
+              "x": {
+                "type": "literal",
+                "value": { "type": "text", "value": "Eat a berry (have " }
+              },
+              "op": "+",
+              "y": {
+                "type": "var",
+                "identifier": { "type": "literal", "value": "inv_berries" }
+              }
+            },
+            "op": "+",
+            "y": {
+              "type": "literal",
+              "value": { "type": "text", "value": ")" }
+            }
+          },
+          "condition": {
+            "type": "binary_op",
+            "op": ">",
+            "x": {
+              "type": "var",
+              "identifier": { "type": "literal", "value": "inv_berries" }
+            },
+            "y": {
+              "type": "literal",
+              "value": { "type": "number", "value": 0 }
+            }
+          }
+        },
+        {
+          "id": "091abb71-30cd-4651-8860-a3253b918674",
+          "actions": [
+            { "type": "go back", "id": "065a7d13-9f33-432f-bee8-deed1423a9a4" }
+          ],
+          "text": {
+            "type": "literal",
+            "value": { "type": "text", "value": "Go Back" }
           }
         }
       ]

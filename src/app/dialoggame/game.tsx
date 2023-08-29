@@ -34,6 +34,7 @@ function getText(e: S.Expression, env: S.Environment): React.ReactNode {
     </div>
   );
 }
+
 function Game() {
   const { gameDefinition, dispatch } = useContext(DebugContext);
 
@@ -47,6 +48,31 @@ function Game() {
       S.isTruthy(S.evaluateExpression(environment, option.condition, true))
     );
   });
+
+  const specialOption: D.DialogOption | boolean = S.getStringValue(
+    environment.vars["_specialOption"]
+  ) !== "0" && {
+    text: S.l(S.t("Menu")),
+    id: crypto.randomUUID(),
+    actions: [
+      {
+        type: "screept",
+        value: {
+          type: "bind",
+          identifier: { type: "literal", value: "_specialOption" },
+          value: { type: "literal", value: { type: "number", value: 0 } },
+        },
+        id: crypto.randomUUID(),
+      },
+      {
+        type: "go_dialog",
+        destination: S.getStringValue(environment.vars["_specialOption"]),
+        id: crypto.randomUUID(),
+      },
+    ],
+  };
+  console.log(environment.vars["_specialOption"], specialOption);
+
   return (
     <Card className="w-full xl:w-[600px] p-4">
       <CardTitle>Dialog Game</CardTitle>
@@ -63,7 +89,7 @@ function Game() {
         </div>
       )}
       <CardContent className="flex flex-col gap-1 mt-1">
-        {options.map((op) => (
+        {(specialOption ? [...options, specialOption] : options).map((op) => (
           <Button
             key={op.id}
             className="w-full"
