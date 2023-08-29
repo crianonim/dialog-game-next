@@ -127,8 +127,7 @@ export function DialogActionDebugView({
             }}
           >
             <div className="flex gap-1">
-              {editState.isEdited && dropdown(<TypeBadge type="go" />)}
-              <TypeBadge invisible={editState.isEdited} type="go">
+              <TypeBadge type="go">
                 {editableString(
                   "input",
                   (s) =>
@@ -165,9 +164,7 @@ export function DialogActionDebugView({
             </div>
           </div>
         ))
-        .with({ type: "go back" }, () =>
-          dropdown(<TypeBadge type="back"> </TypeBadge>)
-        )
+        .with({ type: "go back" }, () => <TypeBadge type="back"> </TypeBadge>)
         .with({ type: "screept" }, ({ value }) => (
           <TypeBadge type="screept">
             {editableStatement(
@@ -191,7 +188,6 @@ export function DialogActionDebugView({
         ))
         .with({ type: "conditional" }, (c) => (
           <div className="flex items-center gap-1">
-            {dropdown(<TypeBadge type="conditional" />)}
             <TypeBadge invisible={editState.isEdited} type="conditional">
               <div className="flex gap-1 items-center">
                 {editableExpression(
@@ -257,11 +253,13 @@ export function DialogActionDebugView({
         ))
         .exhaustive()}
       {editState.isEdited && (
-        <div className="flex items-center gap-1 p-1">
-          {dropdown(<MenuSquare />)}
-          {deleteAction && <Trash2 onClick={deleteAction} />}
-          <ChevronUpSquare />
-          <ChevronDownSquare />
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-1 py-1">
+            {dropdown(<MenuSquare />)}
+            {deleteAction && <Trash2 onClick={deleteAction} />}
+            <ChevronUpSquare />
+            <ChevronDownSquare />
+          </div>
           <div className="text-slate-600">ActionID ({action.id})</div>
         </div>
       )}

@@ -77,9 +77,13 @@ export function editableDropdown(
       editState.target.id == editTarget.id ? (
         <div className="flex flex-col">
           <Select
-            onValueChange={(value) =>
-              dispatchEdit({ type: "updateValue", value })
-            }
+            onValueChange={(value) => {
+              dispatch({
+                type: "update dialogs",
+                dialogs: updatedDialogs(value),
+              });
+              dispatchEdit({ type: "cancelEditing" });
+            }}
           >
             <SelectTrigger className="">
               <SelectValue placeholder={savedValue} />
@@ -95,31 +99,6 @@ export function editableDropdown(
               </SelectGroup>
             </SelectContent>
           </Select>
-          <div className="flex gap-1 justify-between items-center">
-            <Button
-              onClick={() => {
-                dispatch({
-                  type: "update dialogs",
-                  dialogs: updatedDialogs(editState.value),
-                });
-                dispatchEdit({ type: "cancelEditing" });
-              }}
-            >
-              Save
-            </Button>
-            {editState.error && (
-              <div className="text-red-500 h-10 overflow-auto">
-                {editState.error}
-              </div>
-            )}
-            <Button
-              onClick={() => {
-                dispatchEdit({ type: "cancelEditing", whole: false });
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
         </div>
       ) : (
         <div
