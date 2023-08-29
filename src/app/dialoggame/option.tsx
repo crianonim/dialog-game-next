@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { EditContentState, EditType, editableExpression } from "./editable";
 import DebugActionGroup from "./actionGroup";
+import { moveDown, moveUp } from "@/utils";
 
 type OptionDebugViewProps = {
   option: D.DialogOption;
@@ -102,14 +103,7 @@ export function OptionDebugView({
               const options = dialogs[dialogId].options;
               const indx = options.findIndex((x) => x.id === option.id);
               const newOptions: D.DialogOption[] =
-                indx > 0
-                  ? [
-                      ...options.slice(0, indx - 1),
-                      option,
-                      options[indx - 1],
-                      ...options.slice(indx + 1),
-                    ]
-                  : options;
+                indx > 0 ? moveUp(indx, options) : options;
               dispatch({
                 type: "update dialogs",
                 dialogs: D.updateDialog(dialogs, dialogId, (d) => ({
@@ -126,14 +120,7 @@ export function OptionDebugView({
               const options = dialogs[dialogId].options;
               const indx = options.findIndex((x) => x.id === option.id);
               const newOptions: D.DialogOption[] =
-                indx < options.length - 1
-                  ? [
-                      ...options.slice(0, indx),
-                      options[indx + 1],
-                      option,
-                      ...options.slice(indx + 2),
-                    ]
-                  : options;
+                indx < options.length - 1 ? moveDown(indx, options) : options;
               dispatch({
                 type: "update dialogs",
                 dialogs: D.updateDialog(dialogs, dialogId, (d) => ({

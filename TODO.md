@@ -4,13 +4,10 @@
 
 ## Options
 
-- up/down
 - fixed/always show oprion
 
 ## Actions:
 
-- remove
-- move up/down
 - improve editing of values
 - improve the changing
 - choose type on adding
@@ -34,7 +31,19 @@ Done
 - add var
 - remove var
 
+## Actions:
+
+- move up/down
+
 # Game definition
 
 - export/import
 - new one from scratch
+
+## Options
+
+- up/down
+
+# Action
+
+- remove

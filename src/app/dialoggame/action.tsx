@@ -40,6 +40,7 @@ type DialogActionDebugViewProps = {
   editState: EditContentState;
   dispatchEdit: (value: EditType) => void;
   deleteAction?: () => void;
+  moveAction?: (el: D.DialogAction, dir: "up" | "down") => void;
 };
 
 export function DialogActionDebugView({
@@ -49,6 +50,7 @@ export function DialogActionDebugView({
   dispatchEdit,
   editState,
   deleteAction,
+  moveAction,
 }: DialogActionDebugViewProps) {
   const { gameDefinition, dispatch } = useContext(DebugContext);
   const gameState = gameDefinition.gameState;
@@ -227,7 +229,7 @@ export function DialogActionDebugView({
                   dispatchEdit={dispatchEdit}
                   optionId={optionId}
                   editState={editState}
-                  parentAction={action}
+                  parentAction={{ side: "then", action: action }}
                 />
                 <span>:</span>
                 <DebugActionGroup
@@ -236,7 +238,7 @@ export function DialogActionDebugView({
                   dispatchEdit={dispatchEdit}
                   optionId={optionId}
                   editState={editState}
-                  parentAction={action}
+                  parentAction={{ side: "else", action: action }}
                 />
               </div>
             </TypeBadge>
@@ -268,8 +270,20 @@ export function DialogActionDebugView({
         <div className="flex items-center gap-1 p-1">
           {dropdown(<MenuSquare />)}
           {deleteAction && <Trash2 onClick={deleteAction} />}
-          <ChevronUpSquare />
-          <ChevronDownSquare />
+          {moveAction && (
+            <ChevronUpSquare
+              onClick={() => {
+                moveAction(action, "up");
+              }}
+            />
+          )}
+          {moveAction && (
+            <ChevronDownSquare
+              onClick={() => {
+                moveAction(action, "down");
+              }}
+            />
+          )}
           <div className="text-slate-600">ActionID ({action.id})</div>
         </div>
       )}
