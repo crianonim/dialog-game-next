@@ -2,7 +2,7 @@
   "gameState": {
     "screeptEnv": {
       "vars": {
-        "turn": { "type": "number", "value": 110 },
+        "turn": { "type": "number", "value": 130 },
         "money": { "type": "number", "value": 100 },
         "__statusLine": {
           "type": "func",
@@ -51,25 +51,46 @@
             }
           }
         },
-        "stamina": { "type": "number", "value": 100 },
-        "r1": { "type": "number", "value": 2 },
-        "inv_wood": { "type": "number", "value": 0 }
+        "stamina": { "type": "number", "value": 80 },
+        "r1": { "type": "number", "value": 3 },
+        "inv_wood": { "type": "number", "value": 6 },
+        "mod": {
+          "type": "func",
+          "value": {
+            "type": "binary_op",
+            "x": {
+              "type": "var",
+              "identifier": { "type": "literal", "value": "_0" }
+            },
+            "op": "-",
+            "y": {
+              "type": "binary_op",
+              "x": {
+                "type": "parens",
+                "expression": {
+                  "type": "binary_op",
+                  "op": "//",
+                  "x": {
+                    "type": "var",
+                    "identifier": { "type": "literal", "value": "_0" }
+                  },
+                  "y": {
+                    "type": "var",
+                    "identifier": { "type": "literal", "value": "_1" }
+                  }
+                }
+              },
+              "op": "*",
+              "y": {
+                "type": "var",
+                "identifier": { "type": "literal", "value": "_1" }
+              }
+            }
+          }
+        }
       },
       "procedures": {},
-      "output": [
-        { "ts": 1693153018990, "value": "You slept" },
-        { "ts": 1693153401576, "value": "You chopped 3 wood." },
-        { "ts": 1693153442391, "value": "You chopped 2 wood." },
-        { "ts": 1693153443096, "value": "You chopped 1 wood." },
-        { "ts": 1693153443575, "value": "You chopped 4 wood." },
-        { "ts": 1693153444032, "value": "You chopped 2 wood." },
-        { "ts": 1693153444520, "value": "You chopped 2 wood." },
-        { "ts": 1693153445016, "value": "You chopped 4 wood." },
-        { "ts": 1693153445480, "value": "You chopped 3 wood." },
-        { "ts": 1693153446072, "value": "You chopped 3 wood." },
-        { "ts": 1693153447129, "value": "You chopped 4 wood." },
-        { "ts": 1693153450924, "value": "You chopped 2 wood." }
-      ]
+      "output": []
     },
     "dialogStack": ["forest", "start", "farm", "start", "farm", "start"]
   },
@@ -222,7 +243,10 @@
       "id": "forest",
       "text": {
         "type": "literal",
-        "value": { "type": "text", "value": "You are in the forest" }
+        "value": {
+          "type": "text",
+          "value": "You are in the forest and there is a lot to write here <nl> but I will not be using too mych writing here."
+        }
       },
       "options": [
         {
