@@ -12,6 +12,7 @@ import * as S from "../../screept-lang";
 import * as D from "../../dialog";
 import ExpressionView from "../screept/expression";
 import StatementView from "../screept/statement";
+import ScreeptEditor from "../screept/editor";
 
 export type EditType =
   | { type: "startEditing"; value: string; target: EditTarget }
@@ -215,14 +216,21 @@ export function editableValue<A>(
       editState.target.id == editTarget.id ? (
         <div className="flex flex-col">
           {inputType == "textarea" ? (
-            <textarea
-              autoFocus={true}
-              className="h-20 p-1"
-              value={editState.value}
-              onChange={(e) =>
-                dispatchEdit({ type: "updateValue", value: e.target.value })
-              }
-            ></textarea>
+            // <textarea
+            //   autoFocus={true}
+            //   className="h-20 p-1"
+            //   value={editState.value}
+            //   onChange={(e) =>
+            //     dispatchEdit({ type: "updateValue", value: e.target.value })
+            //   }
+            // ></textarea>
+            <ScreeptEditor
+              initialValue={editState.value}
+              environment={environment}
+              onChange={(value) => {
+                if (value) dispatchEdit({ type: "updateValue", value });
+              }}
+            />
           ) : (
             <input
               autoFocus={true}

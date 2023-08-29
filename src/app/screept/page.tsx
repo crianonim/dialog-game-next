@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import * as D from "../../dialog";
-import fabledDefinition from "../../games/fabled2.json";
+import fabledDefinition from "../../games/custom.json";
 const gameDefinition: D.GameDefinition = fabledDefinition as D.GameDefinition;
 const dialogs: Record<string, D.Dialog> = gameDefinition.dialogs;
 
