@@ -16,7 +16,7 @@ import DialogDebug from "./dialogdebug";
 import { Combobox } from "./dialogselector";
 import ErrorBoundary from "@/components/errorBoundary";
 import { DebugContext } from "./context";
-import fabledDefinition from "../../games/fabled.json";
+import fabledDefinition from "../../games/custom.json";
 import GameDebugAdmin from "./admin";
 const loadedGameDefinition = fabledDefinition as D.GameDefinition;
 const initialGameDefinition = loadedGameDefinition;

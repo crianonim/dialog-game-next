@@ -11,6 +11,8 @@ import {
   ChevronUpSquare,
   ChevronDownSquare,
   MenuSquare,
+  PlusSquare,
+  ArrowUpRightSquare,
 } from "lucide-react";
 import {
   Select,
@@ -125,15 +127,20 @@ export function DialogActionDebugView({
       {match(action)
         .with({ type: "go_dialog" }, ({ destination }) => (
           <div
-            className={cn("cursor-pointer", {
-              "bg-red-300": !(destination in dialogs),
-            })}
+            className="cursor-pointer"
+            // className={cn("cursor-pointer", {
+            //   "bg-red-300": !(destination in dialogs),
+            // })}
             onClick={() => {
               if (editState.isEdited) return;
               dispatch({ type: "gamestate", actions: [action] });
             }}
           >
-            <div className="flex gap-1">
+            <div
+              className={cn("flex gap-1", {
+                "text-red-300": !(destination in dialogs),
+              })}
+            >
               <TypeBadge type="go">
                 {editableString(
                   "input",
@@ -153,50 +160,74 @@ export function DialogActionDebugView({
                   dispatch
                 )}
               </TypeBadge>
-              {!(destination in dialogs) && (
-                <Button
-                  onClick={() => {
-                    dispatch({
-                      type: "update dialogs",
-                      dialogs: {
-                        ...dialogs,
-                        [destination]: D.generateNewDialog(destination),
-                      },
-                    });
-                  }}
-                >
-                  Add Dialog
-                </Button>
-              )}
+              <div className="flex gap-1">
+                {destination in dialogs && (
+                  <ArrowUpRightSquare
+                    onClick={() =>
+                      dispatch(
+                        D.createGameDefinitionAction([
+                          {
+                            type: "go_dialog",
+                            destination: destination,
+                            id: "",
+                          },
+                        ])
+                      )
+                    }
+                  />
+                )}
+                {!(destination in dialogs) && (
+                  <>
+                    <PlusSquare
+                      onClick={() => {
+                        dispatch({
+                          type: "update dialogs",
+                          dialogs: {
+                            ...dialogs,
+                            [destination]: D.generateNewDialog(destination),
+                          },
+                        });
+                      }}
+                    >
+                      Create Dialog
+                    </PlusSquare>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         ))
         .with({ type: "go back" }, () => <TypeBadge type="back"> </TypeBadge>)
         .with({ type: "screept" }, ({ value }) => (
-          <TypeBadge type="screept">
-            {editableStatement(
-              "textarea",
-              (p) =>
-                D.updateDialogAction(
-                  dialogs,
-                  dialogId,
-                  optionId,
-                  action.id,
-                  (a) => ({ ...a, type: "screept", value: p })
-                ),
-              value,
-              { type: "action", element: "screept", id: action.id },
-              editState,
-              dispatchEdit,
-              environment,
-              dispatch
-            )}
-          </TypeBadge>
+          <div className="flex gap-1">
+            <TypeBadge type="screept" />
+            <div className="grow">
+              {editableStatement(
+                "textarea",
+                (p) =>
+                  D.updateDialogAction(
+                    dialogs,
+                    dialogId,
+                    optionId,
+                    action.id,
+                    (a) => ({ ...a, type: "screept", value: p })
+                  ),
+                value,
+                { type: "action", element: "screept", id: action.id },
+                editState,
+                dispatchEdit,
+                environment,
+                dispatch
+              )}
+            </div>
+          </div>
         ))
         .with({ type: "conditional" }, (c) => (
-          <div className="flex items-center gap-1">
-            <TypeBadge invisible={editState.isEdited} type="conditional">
-              <div className="flex gap-1 items-center">
+          <div className="flex gap-1">
+            <TypeBadge type="conditional" />
+            <div className="flex flex-col gap-1 w-full">
+              <div className="flex gap-1">
+                <span>IF</span>
                 {editableExpression(
                   "input",
                   (p) =>
@@ -218,26 +249,27 @@ export function DialogActionDebugView({
                   environment,
                   dispatch
                 )}
-                <span>?</span>
-                <DebugActionGroup
-                  dialogId={dialogId}
-                  actions={c.then}
-                  dispatchEdit={dispatchEdit}
-                  optionId={optionId}
-                  editState={editState}
-                  parentAction={{ side: "then", action: action }}
-                />
-                <span>:</span>
-                <DebugActionGroup
-                  dialogId={dialogId}
-                  actions={c.else}
-                  dispatchEdit={dispatchEdit}
-                  optionId={optionId}
-                  editState={editState}
-                  parentAction={{ side: "else", action: action }}
-                />
+                <span>THEN</span>
               </div>
-            </TypeBadge>
+
+              <DebugActionGroup
+                dialogId={dialogId}
+                actions={c.then}
+                dispatchEdit={dispatchEdit}
+                optionId={optionId}
+                editState={editState}
+                parentAction={{ side: "then", action: action }}
+              />
+              <span>:</span>
+              <DebugActionGroup
+                dialogId={dialogId}
+                actions={c.else}
+                dispatchEdit={dispatchEdit}
+                optionId={optionId}
+                editState={editState}
+                parentAction={{ side: "else", action: action }}
+              />
+            </div>
           </div>
         ))
         //TODO REMOVE type
@@ -258,30 +290,51 @@ export function DialogActionDebugView({
         .with({ type: "msg" }, ({ value }) => (
           <div className="flex gap-1">
             <TypeBadge type="message" />
-            <ExpressionView expresssion={value} />
+            <div className="grow">
+              {editableExpression(
+                "input",
+                (p) =>
+                  D.updateDialogAction(
+                    dialogs,
+                    dialogId,
+                    optionId,
+                    action.id,
+                    (a) => ({ ...a, type: "msg", value: p })
+                  ),
+                value,
+                { type: "action", element: "screept", id: action.id },
+                editState,
+                dispatchEdit,
+                environment,
+                dispatch
+              )}
+            </div>
           </div>
         ))
         .exhaustive()}
       {editState.isEdited && (
-        <div className="flex items-center gap-1 p-1">
-          {dropdown(<MenuSquare />)}
-          {deleteAction && <Trash2 onClick={deleteAction} />}
-          {moveAction && (
-            <ChevronUpSquare
-              onClick={() => {
-                moveAction(action, "up");
-              }}
-            />
-          )}
-          {moveAction && (
-            <ChevronDownSquare
-              onClick={() => {
-                moveAction(action, "down");
-              }}
-            />
-          )}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-1 p-1">
+            {dropdown(<MenuSquare />)}
+            {deleteAction && <Trash2 onClick={deleteAction} />}
+            {moveAction && (
+              <ChevronUpSquare
+                onClick={() => {
+                  moveAction(action, "up");
+                }}
+              />
+            )}
+            {moveAction && (
+              <ChevronDownSquare
+                onClick={() => {
+                  moveAction(action, "down");
+                }}
+              />
+            )}
+          </div>
           <div className="text-slate-600">ActionID ({action.id})</div>
         </div>
+      )}
     </div>
   );
 }

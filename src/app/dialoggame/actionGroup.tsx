@@ -164,7 +164,7 @@ export function DebugActionGroup({
   }
 
   return (
-    <div className="border border-red-600">
+    <div className="border border-slate-200 rounded p-1 flex flex-col gap-1">
       {actions.map((a) => (
         <DialogActionDebugView
           key={a.id}

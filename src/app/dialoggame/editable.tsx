@@ -216,7 +216,8 @@ export function editableValue<A>(
         <div className="flex flex-col">
           {inputType == "textarea" ? (
             <textarea
-              className="h-20"
+              autoFocus={true}
+              className="h-20 p-1"
               value={editState.value}
               onChange={(e) =>
                 dispatchEdit({ type: "updateValue", value: e.target.value })
@@ -224,13 +225,14 @@ export function editableValue<A>(
             ></textarea>
           ) : (
             <input
+              autoFocus={true}
               value={editState.value}
               onChange={(e) =>
                 dispatchEdit({ type: "updateValue", value: e.target.value })
               }
             />
           )}
-          <div className="flex gap-1 justify-between items-center">
+          <div className="flex mt-1 gap-1 justify-between items-center">
             <Button
               onClick={() => {
                 const parsed = parseExOrError(editState.value, parse);
