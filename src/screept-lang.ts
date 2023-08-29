@@ -8,7 +8,7 @@ import {
   rule,
 } from "typescript-parsec";
 import { alt, apply, kmid, lrec_sc, seq, str, tok } from "typescript-parsec";
-
+import * as tt from "io-ts";
 // AST
 
 export type Value =
@@ -32,7 +32,9 @@ export type Expression =
 
 export type BinaryOp = "+" | "-" | "*" | "/" | "//" | "==" | "<" | ">";
 
-export type UnaryOp = "+" | "-" | "!";
+export type UnaryOp = tt.TypeOf<typeof UnaryOp>;
+
+const UnaryOp = tt.union([tt.literal("+"), tt.literal("-"), tt.literal("!")]);
 
 export type Identifier =
   | { type: "literal"; value: string }
