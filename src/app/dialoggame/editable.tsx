@@ -40,6 +40,8 @@ export type ParseError = {
   errorMsg: string;
 };
 
+export type InputType = "textarea" | "input" | "singleLine";
+
 function isError(a: any): a is ParseError {
   return (a as ParseError).errorMsg !== undefined;
 }
@@ -122,7 +124,7 @@ export function editableDropdown(
 }
 
 export function editableString(
-  inputType: "textarea" | "input",
+  inputType: InputType,
   updatedDialogs: (p: string) => D.Dialogs,
   savedValue: string,
   editTarget: EditTarget,
@@ -147,7 +149,7 @@ export function editableString(
 }
 
 export function editableExpression(
-  inputType: "textarea" | "input",
+  inputType: InputType,
   updatedDialogs: (p: S.Expression) => D.Dialogs,
   savedValue: S.Expression,
   editTarget: EditTarget,
@@ -171,7 +173,7 @@ export function editableExpression(
   );
 }
 export function editableStatement(
-  inputType: "textarea" | "input",
+  inputType: InputType,
   updatedDialogs: (p: S.Statement) => D.Dialogs,
   savedValue: S.Statement,
   editTarget: EditTarget,
@@ -195,7 +197,7 @@ export function editableStatement(
   );
 }
 export function editableValue<A>(
-  inputType: "textarea" | "input",
+  inputType: InputType,
   updatedDialogs: (parsed: A) => D.Dialogs,
   parse: (s: string) => A,
   stringify: (a: A) => string,
@@ -215,7 +217,15 @@ export function editableValue<A>(
       editState.target.element == editTarget.element &&
       editState.target.id == editTarget.id ? (
         <div className="flex flex-col">
-          {inputType == "textarea" ? (
+          {inputType == "input" ? (
+            <input
+              autoFocus={true}
+              value={editState.value}
+              onChange={(e) =>
+                dispatchEdit({ type: "updateValue", value: e.target.value })
+              }
+            />
+          ) : (
             // <textarea
             //   autoFocus={true}
             //   className="h-20 p-1"
@@ -224,20 +234,14 @@ export function editableValue<A>(
             //     dispatchEdit({ type: "updateValue", value: e.target.value })
             //   }
             // ></textarea>
+
             <ScreeptEditor
+              singleLine={inputType === "singleLine"}
               initialValue={editState.value}
               environment={environment}
               onChange={(value) => {
                 if (value) dispatchEdit({ type: "updateValue", value });
               }}
-            />
-          ) : (
-            <input
-              autoFocus={true}
-              value={editState.value}
-              onChange={(e) =>
-                dispatchEdit({ type: "updateValue", value: e.target.value })
-              }
             />
           )}
           <div className="flex mt-1 gap-1 justify-between items-center">

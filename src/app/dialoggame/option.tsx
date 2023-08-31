@@ -49,9 +49,10 @@ export function OptionDebugView({
   const environment = gameState.screeptEnv;
   return (
     <Card className="p-1 flex flex-col gap-1">
-      <TypeBadge type="text">
+      <div className="flex">
+        <TypeBadge type="text" />
         {editableExpression(
-          "input",
+          "singleLine",
           (parsed) =>
             D.updateDialogOption(dialogs, dialogId, option.id, (o) => ({
               ...o,
@@ -64,28 +65,31 @@ export function OptionDebugView({
           environment,
           dispatch
         )}
-      </TypeBadge>
+      </div>
       {(option.condition || editState.isEdited) && (
-        <TypeBadge type="conditional">
-          {editableExpression(
-            "input",
-            (parsed) =>
-              D.updateDialogOption(dialogs, dialogId, option.id, (o) => ({
-                ...o,
-                condition: parsed,
-              })),
-            option.condition || S.l(S.t("")),
-            {
-              type: "option",
-              element: "condition",
-              id: option.id,
-            },
-            editState,
-            dispatchEdit,
-            environment,
-            dispatch
-          )}
-        </TypeBadge>
+        <div className="flex w-full">
+          <TypeBadge type="conditional" />
+          <div className="grow">
+            {editableExpression(
+              "singleLine",
+              (parsed) =>
+                D.updateDialogOption(dialogs, dialogId, option.id, (o) => ({
+                  ...o,
+                  condition: parsed,
+                })),
+              option.condition || S.l(S.t("")),
+              {
+                type: "option",
+                element: "condition",
+                id: option.id,
+              },
+              editState,
+              dispatchEdit,
+              environment,
+              dispatch
+            )}
+          </div>
+        </div>
       )}
       <div className="flex flex-col gap-1 pl-1">
         <DebugActionGroup

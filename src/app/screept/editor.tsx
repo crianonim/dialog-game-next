@@ -79,16 +79,18 @@ type ScreeptEditorProps = {
   onChange: OnChange;
   initialValue: string;
   environment: S.Environment;
+  singleLine?: Boolean;
 };
 
 function ScreeptEditor({
   onChange,
   initialValue,
   environment,
+  singleLine,
 }: ScreeptEditorProps) {
   const monaco = useMonaco();
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
-
+  console.log({ singleLine });
   function handleEditorDidMount(
     editor: editor.IStandaloneCodeEditor,
     m: Monaco
@@ -185,10 +187,11 @@ function ScreeptEditor({
   const options: editor.IStandaloneEditorConstructionOptions = {
     minimap: { enabled: false },
     wordWrap: "wordWrapColumn",
+    lineNumbers: singleLine ? "off" : "on",
   };
   return (
     <Editor
-      height="200px"
+      height={singleLine ? "1.5rem" : "100px"}
       defaultLanguage="screept"
       defaultValue={initialValue}
       onChange={onChange}

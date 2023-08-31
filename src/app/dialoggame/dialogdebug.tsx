@@ -115,7 +115,7 @@ function DialogDebug({ dialog }: DialogDebugProps) {
           )}
         </div>
         {editableExpression(
-          "textarea",
+          "singleLine",
           (parsed) => D.updateDialogText(dialogs, parsed, dialog.id),
           dialog.text,
           { type: "dialog", id: dialog.id, element: "text" },

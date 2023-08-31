@@ -59,7 +59,7 @@ const initialGameDefinition = loadedGameDefinition;
 // const dialogs = Object.fromEntries(gd.dialogs.map((d) => [d.id, d]));
 
 function DialogGame() {
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(true);
   const [gameDefinition, dispatchGameDefinition] = useReducer<
     (
       state: D.GameDefinition,
