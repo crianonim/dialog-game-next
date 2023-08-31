@@ -9,17 +9,22 @@ function CommandBox() {
   const [error, setError] = useState<string | null>();
   const { gameDefinition, dispatch } = useContext(DebugContext);
   const environment = gameDefinition.gameState.screeptEnv;
+  const [showEditor, setShowEditor] = useState(false);
   return (
     <div className="flex flex-col">
       <div className="flex">
-        <ScreeptEditor
-          environment={environment}
-          onChange={(v) => {
-            if (v) setCommand(v);
-          }}
-          initialValue=""
-          singleLine={true}
-        />
+        {showEditor ? (
+          <ScreeptEditor
+            environment={environment}
+            onChange={(v) => {
+              if (v) setCommand(v);
+            }}
+            initialValue=""
+            singleLine={true}
+          />
+        ) : (
+          <button onClick={() => setShowEditor(true)}>edit</button>
+        )}
         <button
           className="border rounded border-slate-600 px-2"
           onClick={() => {

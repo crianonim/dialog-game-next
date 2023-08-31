@@ -102,12 +102,9 @@ function Game() {
       </CardContent>
       <div>
         <Card className="h-[200px] overflow-auto text-sm text-slate-700 p-1 mb-1">
-          {environment.output
-            .slice()
-            .reverse()
-            .map((o, i) => (
-              <div key={o.ts + i}>{o.value}</div>
-            ))}
+          {environment.output.toReversed().map((o, i) => (
+            <div key={o.ts + i}>{o.value}</div>
+          ))}
         </Card>
         <Button
           onClick={() => {

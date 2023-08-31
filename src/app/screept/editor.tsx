@@ -191,7 +191,7 @@ function ScreeptEditor({
   };
   return (
     <Editor
-      height={singleLine ? "1.5rem" : "100px"}
+      height={singleLine ? "3.5rem" : "100px"}
       defaultLanguage="screept"
       defaultValue={initialValue}
       onChange={onChange}
