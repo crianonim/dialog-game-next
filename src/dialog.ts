@@ -131,7 +131,7 @@ export function gameDefinitionReducer(
   state: GameDefinition,
   action: GameDefinitionAction
 ): GameDefinition {
-  return match(action)
+  const newState = match(action)
     .with({ type: "gamestate" }, ({ actions }) => ({
       ...state,
       gameState: gameStateReducer(state.gameState, actions),
@@ -167,6 +167,9 @@ export function gameDefinitionReducer(
       gameState: fn(state.gameState),
     }))
     .exhaustive();
+
+  localStorage.setItem("autosave", JSON.stringify(newState));
+  return newState;
 }
 
 export function createGameDefinitionAction(

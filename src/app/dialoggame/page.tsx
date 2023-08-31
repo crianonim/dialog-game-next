@@ -109,7 +109,7 @@ function DialogGame() {
               >
                 Back
               </Button>
-              <Button
+              {/* <Button
                 variant="outline"
                 onClick={() =>
                   localStorage.setItem("env", JSON.stringify(gameState))
@@ -130,7 +130,7 @@ function DialogGame() {
                 }}
               >
                 Load
-              </Button>
+              </Button> */}
               <Button
                 onClick={() =>
                   localStorage.setItem(
@@ -152,6 +152,18 @@ function DialogGame() {
                 }}
               >
                 Load Game Definition
+              </Button>
+              <Button
+                onClick={() => {
+                  const loaded = localStorage.getItem("autosave");
+                  if (loaded)
+                    dispatchGameDefinition({
+                      type: "replace game definition",
+                      newGameDefinition: JSON.parse(loaded),
+                    });
+                }}
+              >
+                Load Auto
               </Button>
             </div>
 
