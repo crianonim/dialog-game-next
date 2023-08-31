@@ -37,7 +37,8 @@ import {
   initialContentState,
 } from "./editable";
 import { OptionDebugView } from "./option";
-
+import ScreeptEditor from "../screept/editor";
+import CommandBox from "../screept/command";
 type DialogDebugProps = {
   dialog: D.Dialog;
 };
@@ -49,7 +50,6 @@ function DialogDebug({ dialog }: DialogDebugProps) {
     initialContentState
   );
   const { gameState, dialogs } = gameDefinition;
-
   const environment = gameState.screeptEnv;
 
   function editContentReducer(
@@ -84,6 +84,7 @@ function DialogDebug({ dialog }: DialogDebugProps) {
   return (
     <>
       <Card className="max-w-[800px] text-xs flex flex-col gap-1 p-2">
+        <CommandBox />
         <div className="text-sm flex justify-between items-center">
           <div>
             {" "}
