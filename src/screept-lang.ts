@@ -269,28 +269,51 @@ CONDITIONAL_EXP
 */
 
 CONDITIONAL_EXP.setPattern(
-  lrec_sc(
-    COMPARISON_EXP,
-    seq(
-      tok(TokenKind.ConditionalStart),
-      COMPARISON_EXP,
-      tok(TokenKind.ConditionalEnd),
-      COMPARISON_EXP
-    ),
-    (
-      first: Expression,
-      [t1, onTrue, t2, onFalse]: [
+  alt_sc(
+    apply(
+      seq(
+        COMPARISON_EXP,
+        tok(TokenKind.ConditionalStart),
+        COMPARISON_EXP,
+        tok(TokenKind.ConditionalEnd),
+        CONDITIONAL_EXP
+      ),
+      ([first, t1, onTrue, t2, onFalse]: [
+        Expression,
         Token<TokenKind.ConditionalStart>,
         Expression,
         Token<TokenKind.ConditionalEnd>,
         Expression
-      ]
-    ): Expression => ({
-      type: "conditon",
-      condition: first,
-      onTrue,
-      onFalse,
-    })
+      ]): Expression => ({
+        type: "conditon",
+        condition: first,
+        onTrue,
+        onFalse,
+      })
+    ),
+    apply(
+      seq(
+        COMPARISON_EXP,
+        tok(TokenKind.ConditionalStart),
+        CONDITIONAL_EXP,
+        tok(TokenKind.ConditionalEnd),
+        CONDITIONAL_EXP
+      ),
+      ([first, t1, onTrue, t2, onFalse]: [
+        Expression,
+        Token<TokenKind.ConditionalStart>,
+        Expression,
+        Token<TokenKind.ConditionalEnd>,
+        Expression
+      ]): Expression => ({
+        type: "conditon",
+        condition: first,
+        onTrue,
+        onFalse,
+      })
+    ),
+
+    COMPARISON_EXP
   )
 );
 
