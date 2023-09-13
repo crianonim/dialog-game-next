@@ -1,25 +1,12 @@
 "use client";
-import * as S from "@crianonim/screept";
-import { exampleScreept, exampleEnv } from "../../example-screept";
 import * as D from "../../dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
 import { useReducer, useState } from "react";
-import EnvironmentView from "../screept/environment";
 import DialogDebug from "./dialogdebug";
 import { Combobox } from "./dialogselector";
-import ErrorBoundary from "@/components/errorBoundary";
 import { DebugContext } from "./context";
 import loadedDefinition from "../../games/custom.json";
-import GameDebugAdmin from "./admin";
-import Game from "./game";
-import { z } from "zod";
+import DialogGameReactUI from "@/components/dialog-game-react";
 const initialGameDefinition = D.schemaGameDefinition.parse(loadedDefinition);
 
 function DialogGame() {
@@ -38,7 +25,10 @@ function DialogGame() {
       value={{ gameDefinition, dispatch: dispatchGameDefinition }}
     >
       <div className="flex gap-1 p-4">
-        <Game />
+        <DialogGameReactUI
+          dispatch={dispatchGameDefinition}
+          gameDefinition={gameDefinition}
+        />
         {edit && (
           <div>
             <div className="flex gap-1">
@@ -73,28 +63,7 @@ function DialogGame() {
               >
                 Back
               </Button>
-              {/* <Button
-                variant="outline"
-                onClick={() =>
-                  localStorage.setItem("env", JSON.stringify(gameState))
-                }
-              >
-                Save
-              </Button>
 
-              <Button
-                variant="outline"
-                onClick={() => {
-                  const loaded = localStorage.getItem("env");
-                  if (loaded)
-                    dispatchGameDefinition({
-                      type: "replace",
-                      newState: JSON.parse(loaded),
-                    });
-                }}
-              >
-                Load
-              </Button> */}
               <Button
                 onClick={() =>
                   localStorage.setItem(
@@ -136,7 +105,6 @@ function DialogGame() {
             <DialogDebug dialog={dialog} />
           </div>
         )}
-        {/*  <EnvironmentView environment={gameState.screeptEnv} /> */}
       </div>
       <Button
         className="m-4"

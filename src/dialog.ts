@@ -1,12 +1,12 @@
 import * as S from "@crianonim/screept";
 import { match } from "ts-pattern";
+import { z } from "zod";
 
 export const schemaGameState = z.object({
   dialogStack: z.array(z.string()),
   screeptEnv: S.schemaEnvironment,
 });
 export type GameState = z.infer<typeof schemaGameState>;
-import { z } from "zod";
 
 const schemaDialogActionGoBack = z.object({
   type: z.literal("go back"),
@@ -321,4 +321,53 @@ export function generateNewGameDefinition(): GameDefinition {
       dialogStack: ["start"],
     },
   };
+}
+
+export function getVisibleOptions(
+  options: DialogOption[],
+  environment: S.Environment
+): DialogOption[] {
+  const specialOption: DialogOption | boolean | undefined = environment.vars[
+    "_specialOption"
+  ] &&
+    S.getStringValue(environment.vars["_specialOption"]) !== "0" && {
+      text: S.l(S.t("Menu")),
+      id: crypto.randomUUID(),
+      actions: [
+        {
+          type: "screept",
+          value: {
+            type: "bind",
+            identifier: { type: "literal", value: "_specialOption" },
+            value: { type: "literal", value: { type: "number", value: 0 } },
+          },
+          id: crypto.randomUUID(),
+        },
+        {
+          type: "go_dialog",
+          destination: S.getStringValue(environment.vars["_specialOption"]),
+          id: crypto.randomUUID(),
+        },
+      ],
+    };
+
+  return (specialOption ? [...options, specialOption] : options).filter(
+    (option) =>
+      !option.condition ||
+      S.isTruthy(S.evaluateExpression(environment, option.condition))
+  );
+}
+
+export function getStatusLine(environment: S.Environment): string | undefined {
+  if ("__statusLine" in environment.vars)
+    return S.getStringValue(
+      S.evaluateExpression(environment, S.parseExpression("__statusLine()"))
+    );
+}
+
+export function getSplitStringOnNL(
+  e: S.Expression,
+  env: S.Environment
+): string[] {
+  return S.getStringValue(S.evaluateExpression(env, e)).split("<nl>");
 }

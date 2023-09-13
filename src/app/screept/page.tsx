@@ -1,26 +1,15 @@
 "use client";
 import { useState } from "react";
-// import * as S from "@crianonim/screept";
 import * as S from "@crianonim/screept";
 
-import { exampleScreept, exampleEnv } from "../../example-screept";
-import EnvironmentView from "./environment";
+import { exampleScreept } from "../../example-screept";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import * as D from "../../dialog";
-import fabledDefinition from "../../games/custom.json";
-const gameDefinition: D.GameDefinition = fabledDefinition as D.GameDefinition;
-const dialogs: Record<string, D.Dialog> = gameDefinition.dialogs;
-
+import loadedDefinition from "../../games/custom.json";
+const gameDefinition = D.schemaGameDefinition.parse(loadedDefinition);
 function Screept() {
   const [screept, setScreept] = useState(exampleScreept);
   const [environment, setEnvironment] = useState<S.Environment>(
