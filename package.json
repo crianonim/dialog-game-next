@@ -34,6 +34,7 @@
     "tailwindcss-animate": "^1.0.6",
     "ts-pattern": "^5.0.5",
     "typescript": "^5.2.1-rc",
-    "typescript-parsec": "^0.3.4"
+    "typescript-parsec": "^0.3.4",
+    "zod": "^3.22.2"
   }
 }
