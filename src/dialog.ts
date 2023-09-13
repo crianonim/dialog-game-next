@@ -1,44 +1,98 @@
 import * as S from "@crianonim/screept";
-import fabled from "./games/custom.json";
 import { match } from "ts-pattern";
-export type GameState = { dialogStack: string[]; screeptEnv: S.Environment };
 
-export type DialogAction =
-  | { type: "go back"; id: string }
-  | { type: "go_dialog"; destination: string; id: string }
-  | { type: "msg"; value: S.Expression; id: string }
-  | { type: "screept"; value: S.Statement; id: string }
-  | {
-      type: "conditional";
-      if: S.Expression;
-      then: DialogAction[];
-      else: DialogAction[];
-      id: string;
-    }
-  | { type: "block"; actions: DialogAction[]; id: string };
+export const schemaGameState = z.object({
+  dialogStack: z.array(z.string()),
+  screeptEnv: S.schemaEnvironment,
+});
+export type GameState = z.infer<typeof schemaGameState>;
+import { z } from "zod";
 
-export type DialogOption = {
-  id: string;
-  text: S.Expression;
-  condition?: S.Expression;
+const schemaDialogActionGoBack = z.object({
+  type: z.literal("go back"),
+  id: z.string(),
+});
+
+const schemaDialogActionGoDialog = z.object({
+  type: z.literal("go_dialog"),
+  destination: z.string(),
+  id: z.string(),
+});
+
+const schemaDialogActionMsg = z.object({
+  type: z.literal("msg"),
+  value: S.schemaExpression,
+  id: z.string(),
+});
+
+const schemaDialogActionScreept = z.object({
+  type: z.literal("screept"),
+  value: S.schemaStatement,
+  id: z.string(),
+});
+
+const schemaDialogActionConditionalBase = z.object({
+  type: z.literal("conditional"),
+  if: S.schemaExpression,
+  id: z.string(),
+});
+type DialogActionConditional = z.infer<
+  typeof schemaDialogActionConditionalBase
+> & { then: DialogAction[]; else: DialogAction[] };
+
+const schemaDialogActionConditional: z.ZodType<DialogActionConditional> =
+  schemaDialogActionConditionalBase.extend({
+    then: z.lazy(() => z.array(schemaDialogAction)),
+    else: z.lazy(() => z.array(schemaDialogAction)),
+  });
+
+const schemaDialogActionBlockBase = z.object({
+  type: z.literal("block"),
+  id: z.string(),
+});
+
+type DialogActionBlock = z.infer<typeof schemaDialogActionBlockBase> & {
   actions: DialogAction[];
 };
 
-export type Game = { gameState: GameState; dialogs: Record<string, Dialog> };
+const schemaDialogActionBlock: z.ZodType<DialogActionBlock> =
+  schemaDialogActionBlockBase.extend({
+    actions: z.array(z.lazy(() => schemaDialogAction)),
+  });
+const schemaDialogAction = z.union([
+  schemaDialogActionGoBack,
+  schemaDialogActionGoDialog,
+  schemaDialogActionMsg,
+  schemaDialogActionScreept,
+  schemaDialogActionConditional,
+  schemaDialogActionBlock,
+]);
 
-export type GameDefinition = {
-  dialogs: Record<string, Dialog>;
-  gameState: GameState;
-};
+export type DialogAction = z.infer<typeof schemaDialogAction>;
+const schemaDialogOption = z.object({
+  id: z.string(),
+  text: S.schemaExpression,
+  condition: S.schemaExpression.optional(),
+  actions: z.array(schemaDialogAction),
+});
+export type DialogOption = z.infer<typeof schemaDialogOption>;
 
-export type Dialog = {
-  id: string;
-  text: S.Expression;
-  options: DialogOption[];
-};
+const schemaDialog = z.object({
+  id: z.string(),
+  text: S.schemaExpression,
+  options: z.array(schemaDialogOption),
+});
+
+export type Dialog = z.infer<typeof schemaDialog>;
 
 export type Dialogs = Record<string, Dialog>;
 
+export const schemaGameDefinition = z.object({
+  dialogs: z.record(schemaDialog),
+  gameState: schemaGameState,
+});
+
+export type GameDefinition = z.infer<typeof schemaGameDefinition>;
 const BAD_DIALOG: Dialog = {
   text: S.l(S.t("Bad Dialog")),
   id: "bad",

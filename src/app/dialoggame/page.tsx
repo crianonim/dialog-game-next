@@ -16,47 +16,11 @@ import DialogDebug from "./dialogdebug";
 import { Combobox } from "./dialogselector";
 import ErrorBoundary from "@/components/errorBoundary";
 import { DebugContext } from "./context";
-import fabledDefinition from "../../games/custom.json";
+import loadedDefinition from "../../games/custom.json";
 import GameDebugAdmin from "./admin";
 import Game from "./game";
-const loadedGameDefinition = fabledDefinition as D.GameDefinition;
-const initialGameDefinition = loadedGameDefinition;
-// const initialGameDefinition: D.GameDefinition = {
-//   ...loadedGameDefinition,
-//   dialogs: Object.fromEntries(
-//     Object.entries(loadedGameDefinition.dialogs).map(([dId, dialog]) => [
-//       dId,
-//       addIdsToDialogItems(dialog),
-//     ])
-//   ),
-// };
-// function addIdsToDialogItems(dialog: D.Dialog) {
-//   return {
-//     ...dialog,
-//     options: dialog.options.map((o) => ({
-//       ...addId(o),
-//       actions: addIdToActionGroup(o.actions),
-//     })),
-//   };
-// }
-
-// function addIdToActionGroup(actions: D.DialogAction[]): D.DialogAction[] {
-//   return actions.map((a) => {
-//     const updated = addId(a);
-//     if (updated.type === "conditional")
-//       return {
-//         ...updated,
-//         then: addIdToActionGroup(updated.then),
-//         else: addIdToActionGroup(updated.else),
-//       };
-//     else return updated;
-//   });
-// }
-// function addId<T extends D.DialogOption | D.DialogAction>(e: T): T {
-//   return { ...e, id: crypto.randomUUID() };
-// }
-
-// const dialogs = Object.fromEntries(gd.dialogs.map((d) => [d.id, d]));
+import { z } from "zod";
+const initialGameDefinition = D.schemaGameDefinition.parse(loadedDefinition);
 
 function DialogGame() {
   const [edit, setEdit] = useState(true);
@@ -147,7 +111,9 @@ function DialogGame() {
                   if (loaded)
                     dispatchGameDefinition({
                       type: "replace game definition",
-                      newGameDefinition: JSON.parse(loaded),
+                      newGameDefinition: D.schemaGameDefinition.parse(
+                        JSON.parse(loaded)
+                      ),
                     });
                 }}
               >

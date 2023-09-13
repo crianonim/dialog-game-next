@@ -39,7 +39,9 @@ function GameDebugAdmin() {
         onClick={() => {
           dispatch({
             type: "replace game definition",
-            newGameDefinition: JSON.parse(importValue),
+            newGameDefinition: D.schemaGameDefinition.parse(
+              JSON.parse(importValue)
+            ),
           });
         }}
       >
