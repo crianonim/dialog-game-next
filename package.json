@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@crianonim/screept": "^0.1.0",
     "@monaco-editor/react": "^4.5.2",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-label": "^2.0.2",
@@ -35,7 +36,6 @@
     "ts-pattern": "^5.0.5",
     "typescript": "^5.2.1-rc",
     "typescript-parsec": "^0.3.4",
-    "zod": "^3.22.2",
-    "@crianonim/screept": "file:../screept"
+    "zod": "^3.22.2"
   }
 }
