@@ -1,4 +1,4 @@
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import { exampleScreept, exampleEnv } from "../../example-screept";
 import * as D from "../../dialog";
 import { Button } from "@/components/ui/button";

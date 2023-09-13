@@ -1,4 +1,4 @@
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import { match } from "ts-pattern";
 import IdentifierView from "./identifier";
 import ValueView from "./value";
@@ -10,12 +10,12 @@ type ExpressionViewProps = {
 };
 function ExpressionView({ expresssion, environment }: ExpressionViewProps) {
   const evaluated = environment
-    ? S.getStringValue(S.evaluateExpression(environment, expresssion, true))
+    ? S.getStringValue(S.evaluateExpression(environment, expresssion))
     : undefined;
   let failed = false;
   try {
     environment
-      ? S.getStringValue(S.evaluateExpression(environment, expresssion, false))
+      ? S.getStringValue(S.evaluateExpression(environment, expresssion))
       : undefined;
   } catch (e) {
     console.log("EXP", { e });

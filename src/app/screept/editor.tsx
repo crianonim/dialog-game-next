@@ -7,7 +7,7 @@ import Editor, {
   Monaco,
 } from "@monaco-editor/react";
 import { Position, editor } from "monaco-editor";
-import * as S from "@/screept-lang";
+import * as S from "@crianonim/screept";
 
 function setUpLanguage(monaco: Monaco, environment: S.Environment) {
   const keywords = ["PRINT", "IF", "THEN", "RND", "FUNC", "PROC", "RUN"];

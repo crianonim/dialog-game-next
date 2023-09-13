@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import * as D from "../../dialog";
 type DebugContextType = {
   gameDefinition: D.GameDefinition;

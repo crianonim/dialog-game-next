@@ -1,4 +1,4 @@
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import StatementView from "./statement";
 type ProcedureViewProps = { statement: S.Statement; name: string };
 function ProcedureView({ statement, name }: ProcedureViewProps) {

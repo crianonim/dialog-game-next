@@ -1,4 +1,4 @@
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import { match } from "ts-pattern";
 import ExpressionView from "./expression";
 import IdentifierView from "./identifier";

@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import * as D from "../../dialog";
 import ExpressionView from "../screept/expression";
 import StatementView from "../screept/statement";

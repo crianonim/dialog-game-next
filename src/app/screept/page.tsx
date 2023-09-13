@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
-import * as S from "../../screept-lang";
+// import * as S from "@crianonim/screept";
+import * as S from "@crianonim/screept";
+
 import { exampleScreept, exampleEnv } from "../../example-screept";
 import EnvironmentView from "./environment";
 import { Button } from "@/components/ui/button";
@@ -21,7 +23,7 @@ const dialogs: Record<string, D.Dialog> = gameDefinition.dialogs;
 
 function Screept() {
   const [screept, setScreept] = useState(exampleScreept);
-  const [environment, setEnvironment] = useState(
+  const [environment, setEnvironment] = useState<S.Environment>(
     gameDefinition.gameState.screeptEnv
   );
   const [status, setStatus] = useState("");

@@ -1,5 +1,5 @@
 "use client";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import { exampleScreept, exampleEnv } from "../../example-screept";
 import * as D from "../../dialog";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ const initialGameDefinition = loadedGameDefinition;
 
 function getText(e: S.Expression, env: S.Environment): React.ReactNode {
   const splitString: string[] = S.getStringValue(
-    S.evaluateExpression(env, e, true)
+    S.evaluateExpression(env, e)
   ).split("<nl>");
 
   return (
@@ -40,12 +40,12 @@ function Game() {
 
   const { gameState, dialogs } = gameDefinition;
 
-  const environment = gameState.screeptEnv;
+  const environment: S.Environment = gameState.screeptEnv;
   const dialog: D.Dialog = D.getDialogFromStack(gameState.dialogStack, dialogs);
   const options: D.DialogOption[] = dialog.options.filter((option) => {
     return (
       !option.condition ||
-      S.isTruthy(S.evaluateExpression(environment, option.condition, true))
+      S.isTruthy(S.evaluateExpression(environment, option.condition))
     );
   });
 

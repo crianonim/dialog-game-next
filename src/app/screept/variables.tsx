@@ -1,5 +1,5 @@
 import { match } from "ts-pattern";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import ValueView from "./value";
 type VariableViewProps = {
   name: string;

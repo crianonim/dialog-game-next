@@ -31,7 +31,7 @@ import {
   editableStatement,
   editableString,
 } from "./editable";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import * as D from "../../dialog";
 import { Button } from "@/components/ui/button";
 import { DebugActionGroup } from "./actionGroup";

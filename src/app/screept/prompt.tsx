@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import { match } from "ts-pattern";
 
 function Prompt() {

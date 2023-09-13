@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ScreeptEditor from "./editor";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import { useContext, useState } from "react";
 import { DebugContext } from "../dialoggame/context";
 

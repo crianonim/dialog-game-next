@@ -1,4 +1,4 @@
-import * as S from "./screept-lang";
+import * as S from "@crianonim/screept";
 import fabled from "./games/custom.json";
 import { match } from "ts-pattern";
 export type GameState = { dialogStack: string[]; screeptEnv: S.Environment };
@@ -90,7 +90,7 @@ function executeAction(state: GameState, action: DialogAction): GameState {
     .with({ type: "block" }, ({ actions }) => gameStateReducer(state, actions))
     .with({ type: "conditional" }, (a) => {
       const condition = S.isTruthy(
-        S.evaluateExpression(state.screeptEnv, a.if, true)
+        S.evaluateExpression(state.screeptEnv, a.if)
       );
       return condition
         ? gameStateReducer(state, a.then)
@@ -102,7 +102,7 @@ function executeAction(state: GameState, action: DialogAction): GameState {
     }))
     .with({ type: "msg" }, ({ value }) => {
       const newOutput: string = S.getStringValue(
-        S.evaluateExpression(state.screeptEnv, value, true)
+        S.evaluateExpression(state.screeptEnv, value)
       );
       return {
         ...state,

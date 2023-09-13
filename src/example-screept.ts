@@ -1,4 +1,4 @@
-import * as S from "./screept-lang";
+import * as S from "@crianonim/screept";
 
 export const exampleEnv: S.Environment = {
   output: [],
@@ -18,14 +18,12 @@ export const exampleEnv: S.Environment = {
     var: S.n(3),
     fn1: {
       type: "func",
-      value: S.add(
+      value: add(
         { type: "var", identifier: { type: "literal", value: "_0" } },
         { type: "var", identifier: { type: "literal", value: "_1" } }
       ),
     },
-    status: S.fn(
-      `"SS Turn: "+turn+" Time: "+hour+":"+minutes+", Gold: "+money`
-    ),
+    status: fn(`"SS Turn: "+turn+" Time: "+hour+":"+minutes+", Gold: "+money`),
     _enemy_name: S.t("s"),
     farm_level: S.n(1),
     farm_plot_planted_1: S.n(0),
@@ -34,13 +32,13 @@ export const exampleEnv: S.Environment = {
     farm_plot_stage_2: S.n(0),
     farm_plot_tilled_1: S.n(0),
     farm_plot_tilled_2: S.n(0),
-    farm_upgrade_cost: S.fn("((farm_level + 1) * 50)"),
+    farm_upgrade_cost: fn("((farm_level + 1) * 50)"),
     hour: S.n(0),
     minutes: S.n(0),
     money: S.n(1000),
     player_name: S.t("Liana"),
     player_profession: S.t("wayfarer"),
-    test_func: S.fn("(turn + turns_per_hour)"),
+    test_func: fn("(turn + turns_per_hour)"),
     turn: S.n(1),
     turns_count: S.n(3),
     turns_per_hour: S.n(2),
@@ -97,3 +95,10 @@ export const exampleScreept = `{
       RUN farm_till();
       PRINT status();
   }`;
+
+function fn(s: string): S.Value {
+  return { type: "func", value: S.parseExpression(s) };
+}
+function add(x: S.Expression, y: S.Expression): S.Expression {
+  return { type: "binary_op", op: "+", x, y };
+}

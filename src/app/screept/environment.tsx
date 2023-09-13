@@ -1,5 +1,5 @@
 import { useState } from "react";
-import * as S from "../../screept-lang";
+import * as S from "@crianonim/screept";
 import ProcedureView from "./procedure_view";
 import VariableView from "./variables";
 type EnvironmentViewProps = {
