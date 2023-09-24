@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import * as D from "../../dialog";
+import * as D from "@crianonim/dialog";
 import loadedDefinition from "../../games/custom.json";
 const gameDefinition = D.schemaGameDefinition.parse(loadedDefinition);
 function Screept() {

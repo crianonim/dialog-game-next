@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import * as S from "@crianonim/screept";
-import * as D from "../../dialog";
+import * as D from "@crianonim/dialog";
 type DebugContextType = {
   gameDefinition: D.GameDefinition;
 

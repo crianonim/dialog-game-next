@@ -6,7 +6,7 @@ type EnvironmentViewProps = {
   environment: S.Environment;
   dispatch: React.Dispatch<D.GameDefinitionAction>;
 };
-import * as D from "../../dialog";
+import * as D from "@crianonim/dialog";
 
 import {
   Table,

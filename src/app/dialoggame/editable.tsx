@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import * as S from "@crianonim/screept";
-import * as D from "../../dialog";
+import * as D from "@crianonim/dialog";
 import ExpressionView from "../screept/expression";
 import StatementView from "../screept/statement";
 import ScreeptEditor from "../screept/editor";

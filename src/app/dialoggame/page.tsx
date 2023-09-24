@@ -1,5 +1,5 @@
 "use client";
-import * as D from "../../dialog";
+import * as D from "@crianonim/dialog";
 import { Button } from "@/components/ui/button";
 import { useReducer, useState } from "react";
 import DialogDebug from "./dialogdebug";

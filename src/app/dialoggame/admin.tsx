@@ -1,7 +1,7 @@
 "use client";
 import * as S from "@crianonim/screept";
 import { exampleScreept, exampleEnv } from "../../example-screept";
-import * as D from "../../dialog";
+import * as D from "@crianonim/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
