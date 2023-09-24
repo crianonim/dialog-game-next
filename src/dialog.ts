@@ -292,15 +292,6 @@ export function updateDialogAction(
   }));
 }
 
-// todo remove and use inline
-export function updateDialogText(
-  dialogs: Dialogs,
-  text: S.Expression,
-  dialogId: string
-): Dialogs {
-  return updateDialog(dialogs, dialogId, (d) => ({ ...d, text }));
-}
-
 export function generateNewDialog(id: string): Dialog {
   return {
     id,

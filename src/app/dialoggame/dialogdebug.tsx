@@ -117,7 +117,8 @@ function DialogDebug({ dialog }: DialogDebugProps) {
         </div>
         {editableExpression(
           "singleLine",
-          (parsed) => D.updateDialogText(dialogs, parsed, dialog.id),
+          (parsed) =>
+            D.updateDialog(dialogs, dialog.id, (d) => ({ ...d, text: parsed })),
           dialog.text,
           { type: "dialog", id: dialog.id, element: "text" },
           editState,
