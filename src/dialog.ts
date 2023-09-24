@@ -1,6 +1,7 @@
 import * as S from "@crianonim/screept";
 import { match } from "ts-pattern";
 import { z } from "zod";
+import { v4 } from "uuid";
 
 export const schemaGameState = z.object({
   dialogStack: z.array(z.string()),
@@ -98,8 +99,8 @@ const BAD_DIALOG: Dialog = {
   id: "bad",
   options: [
     {
-      id: crypto.randomUUID(),
-      actions: [{ type: "go back", id: crypto.randomUUID() }],
+      id: v4(),
+      actions: [{ type: "go back", id: v4() }],
       text: S.l(S.t("Go Back")),
     },
   ],
@@ -196,9 +197,9 @@ export function gameDefinitionReducer(
       const options: DialogOption[] = [
         ...dialog.options,
         {
-          actions: [{ type: "go back", id: crypto.randomUUID() }],
+          actions: [{ type: "go back", id: v4() }],
           text: S.l(S.t("..")),
-          id: crypto.randomUUID(),
+          id: v4(),
         },
       ];
       const newState = { ...state };
@@ -222,7 +223,6 @@ export function gameDefinitionReducer(
     }))
     .exhaustive();
 
-  localStorage.setItem("autosave", JSON.stringify(newState));
   return newState;
 }
 
@@ -332,7 +332,7 @@ export function getVisibleOptions(
   ] &&
     S.getStringValue(environment.vars["_specialOption"]) !== "0" && {
       text: S.l(S.t("Menu")),
-      id: crypto.randomUUID(),
+      id: v4(),
       actions: [
         {
           type: "screept",
@@ -341,12 +341,12 @@ export function getVisibleOptions(
             identifier: { type: "literal", value: "_specialOption" },
             value: { type: "literal", value: { type: "number", value: 0 } },
           },
-          id: crypto.randomUUID(),
+          id: v4(),
         },
         {
           type: "go_dialog",
           destination: S.getStringValue(environment.vars["_specialOption"]),
-          id: crypto.randomUUID(),
+          id: v4(),
         },
       ],
     };
