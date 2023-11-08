@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@crianonim/dialog": "^0.0.1",
+    "@crianonim/dialog": "^0.0.2",
     "@crianonim/screept": "^0.1.3",
     "@monaco-editor/react": "^4.5.2",
     "@radix-ui/react-dialog": "^1.0.4",
