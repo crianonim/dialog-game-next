@@ -71,7 +71,7 @@ function ExpressionView({ expresssion, environment }: ExpressionViewProps) {
             </div>
           );
         })
-        .with({ type: "conditon" }, ({ condition, onFalse, onTrue }) => (
+        .with({ type: "condition" }, ({ condition, onFalse, onTrue }) => (
           <div className="flex gap-1">
             <ExpressionView expresssion={condition} />
             <span>?</span>
